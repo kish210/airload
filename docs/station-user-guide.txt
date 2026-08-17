@@ -1,0 +1,45 @@
+﻿AirLoad Station - offline weight and balance
+============================================
+
+What this is
+------------
+Weight and balance calculation and loadsheet production for a station with no
+internet connection. It runs entirely on this machine: no database to install,
+no server to reach, nothing sent anywhere.
+
+The arithmetic is the same code the central AirLoad Pro system runs, so a
+loadsheet produced here and one produced online agree by construction.
+
+Installing
+----------
+1. Copy this whole folder anywhere on the station PC (for example C:\AirLoadStation).
+2. Double-click Start-AirLoadStation.cmd
+3. The browser opens at http://localhost:7801
+
+NOTE: no Node.js runtime is bundled. Node.js 20 or later must already be installed on this PC.
+
+First run
+---------
+Go to the Aircraft tab and paste the AHM 514 configuration JSON for your
+aircraft. Your airline provides this, or it can be exported from AirLoad Pro.
+Nothing is calculated until a real configuration is loaded - the app will not
+guess an aircraft's figures.
+
+Where your data lives
+---------------------
+%USERPROFILE%\AirLoadStation
+
+That folder holds the aircraft configurations and every released loadsheet as
+plain JSON files. Back it up by copying the folder. There is no database.
+
+Limits
+------
+- The app listens on this machine only (127.0.0.1). It is a tool on one desk,
+  not a service other PCs can reach. This is deliberate: it has no login.
+- Loadsheets released here are not synchronised to the central system. Each
+  released sheet carries a checksum so a copy can be verified after transfer.
+- Last minute changes are capped; enter the cap from your operations manual.
+  Above it, or outside the envelope, the app refuses and requires a new
+  loadsheet rather than recording the change.
+
+Version: bundled 2026-08-18

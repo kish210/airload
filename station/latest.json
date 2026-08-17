@@ -1,0 +1,7 @@
+{
+    "version":  "1.0.0",
+    "releaseDate":  "2026-08-18",
+    "notes":  "First release. Offline weight and balance, loadsheet, and last minute changes, using the same calculation engine as AirLoad Pro.",
+    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-1.0.0-portable.zip",
+    "sha256":  "9C5E024D845650A3AF6FF058C5C6E83C7CF050A4D23F8A2F26A4B2B2865FA126"
+}
