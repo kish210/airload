@@ -16,7 +16,7 @@ Installing
 2. Double-click Start-AirLoadStation.cmd
 3. The browser opens at http://localhost:7801
 
-NOTE: no Node.js runtime is bundled. Node.js 20 or later must already be installed on this PC.
+A Node.js runtime is included in this bundle. Nothing else is needed.
 
 First run
 ---------
