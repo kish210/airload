@@ -79,7 +79,7 @@ JSON files in your user folder — back them up by copying the folder.
 1. Download the installer and check its SHA-256 against
    [`station/latest.json`](station/latest.json):
    ```powershell
-   Get-FileHash .\AirLoadStation-Setup-1.1.0.exe -Algorithm SHA256
+   Get-FileHash .\AirLoadStation-Setup-1.1.1.exe -Algorithm SHA256
    ```
 2. Run it. A Node.js runtime is included — nothing else is needed.
 3. Launch **AirLoad Station**, open the **Aircraft** tab, and paste your
