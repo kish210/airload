@@ -17,6 +17,16 @@ one Windows PC, with no internet connection, no database, and no licence fee.
 
 ---
 
+### 47 controlled forms, searchable and fillable
+
+![Controlled forms catalogue](docs/img/forms.png)
+
+### Documents produced from real load data are shown, not typed
+
+![Engine-backed form](docs/img/forms-engine-backed.png)
+
+---
+
 ## English
 
 ### What it does
