@@ -1,7 +1,7 @@
 {
-    "version":  "1.0.0",
+    "version":  "1.1.0",
     "releaseDate":  "2026-08-18",
-    "notes":  "First release. Offline weight and balance, loadsheet, and last minute changes, using the same calculation engine as AirLoad Pro.",
-    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.0.0.exe",
-    "sha256":  "4164C5F8F7F7C86D9EA5C66E7207A98EB7F0FA315E5729B014C964BA510993DE"
+    "notes":  "Passenger counts with IATA RP 1720 standard weights instead of raw kilograms. CG envelope plotted on the printed loadsheet (ZFW, TOW, LAW) for the captain to check before signing. Fuel index table, so ramp, takeoff and landing each use the fuel arm for the quantity actually on board. METAR and TAF when a connection is available. 47 controlled aviation form definitions.",
+    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.1.0.exe",
+    "sha256":  "A4F43E2F49774017363DF2EF0F2ADBD64DC09E4A2762305282058A2B42923963"
 }
