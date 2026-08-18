@@ -1,7 +1,7 @@
 {
-    "version":  "1.1.0",
+    "version":  "1.1.1",
     "releaseDate":  "2026-08-18",
-    "notes":  "Passenger counts with IATA RP 1720 standard weights instead of raw kilograms. CG envelope plotted on the printed loadsheet (ZFW, TOW, LAW) for the captain to check before signing. Fuel index table, so ramp, takeoff and landing each use the fuel arm for the quantity actually on board. METAR and TAF when a connection is available. 47 controlled aviation form definitions.",
-    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.1.0.exe",
-    "sha256":  "A4F43E2F49774017363DF2EF0F2ADBD64DC09E4A2762305282058A2B42923963"
+    "notes":  "Adds the Forms surface: 47 operational form templates, searchable and fillable, saved as drafts with their missing fields listed. Documents that are produced from real load data — loadsheet, loading instructions, trim sheet, LMC, NOTOC — are shown read-only with a pointer to what produces them, so a second set of figures cannot be typed for the same flight.",
+    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.1.1.exe",
+    "sha256":  "87FFD767EAB4580571EECCEE8D60BC538C8A1EE560B8C35CD1B0B9E878ADCB82"
 }
