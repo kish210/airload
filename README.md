@@ -325,6 +325,106 @@ APIS/PNRGOV، پیام‌های Type B، چند-کاربره با نقش و سط
 
 ---
 
+## The 47 forms · النماذج · Formlar · Формы · فرم‌ها
+
+Every form is included in the free version. Forms marked **⚙** describe
+documents this system produces from your real load data, so they are shown
+read-only rather than typed — a second set of figures for the same flight helps
+nobody.
+
+> **Implementation templates, not official ICAO/IATA/FAA/EASA documents.** ·
+> قوالب تنفيذية وليست وثائق رسمية · Uygulama şablonları, resmî belge değildir ·
+> Шаблоны реализации, не официальные документы · قالب پیاده‌سازی، نه سند رسمی
+
+### Dispatch · الإرسال · Uçuş harekât · Диспетчеризация · دیسپچ
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F001 | Flight Plan | خطة الطيران | Uçuş Planı | План полёта | طرح پروازی |
+| F002 | Operational Flight Plan | خطة الطيران التشغيلية | Operasyonel Uçuş Planı | Рабочий план полёта | طرح پروازی عملیاتی |
+| F003 | Flight Release | إذن تشغيل الرحلة | Uçuş İzni | Разрешение на вылет | مجوز پرواز |
+| F004 | Dispatch Briefing | إحاطة الإرسال | Harekât Brifingi | Диспетчерский брифинг | بریفینگ دیسپچ |
+| F005 | Flight Watch Log | سجل متابعة الرحلة | Uçuş İzleme Kaydı | Журнал слежения за рейсом | لاگ پایش پرواز |
+| F006 | Diversion Record | سجل تحويل الوجهة | Yön Değiştirme Kaydı | Запись об уходе на запасной | سابقه‌ی تغییر مسیر |
+| F007 | Flight Close Report | تقرير إغلاق الرحلة | Uçuş Kapanış Raporu | Отчёт о закрытии рейса | گزارش بستن پرواز |
+
+### Passenger, crew, check-in, boarding · الركاب والطاقم · Yolcu ve kabin · Пассажиры и экипаж · مسافر و خدمه
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F010 | Passenger Manifest | كشف الركاب | Yolcu Manifestosu | Список пассажиров | مانیفست مسافر |
+| F011 | Crew Manifest | كشف الطاقم | Mürettebat Manifestosu | Список экипажа | مانیفست خدمه |
+| F012 | Check-in Record | سجل تسجيل الوصول | Check-in Kaydı | Запись регистрации | سابقه‌ی پذیرش |
+| F013 | Boarding Reconciliation | مطابقة الصعود | Biniş Mutabakatı | Сверка посадки | تطبیق سوارشدن |
+| F014 | Passenger Irregularity | مخالفة تخص الراكب | Yolcu Düzensizliği | Нарушение по пассажиру | مغایرت مسافر |
+| F015 | Special Service Request | طلب خدمة خاصة | Özel Hizmet Talebi | Запрос спецобслуживания | درخواست خدمت ویژه |
+| F016 | Unaccompanied Minor Record | سجل القاصر غير المصحوب | Refakatsiz Çocuk Kaydı | Запись о несопровождаемом ребёнке | سابقه‌ی کودک بدون همراه |
+
+### Load control · مراقبة الحمولة · Yük kontrol · Контроль загрузки · کنترل بار
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F020 ⚙ | Preliminary Loadsheet | ورقة الحمولة الأولية | Ön Yük Föyü | Предварительный загрузочный лист | لودشیت مقدماتی |
+| F021 ⚙ | Final Loadsheet | ورقة الحمولة النهائية | Nihai Yük Föyü | Окончательный загрузочный лист | لودشیت نهایی |
+| F022 ⚙ | Load Instruction Report | تقرير تعليمات التحميل | Yükleme Talimat Raporu | Указания по загрузке | دستور بارگیری |
+| F023 ⚙ | Trim Sheet | ورقة الاتزان | Denge Föyü | Центровочный график | برگه‌ی تریم |
+| F024 ⚙ | Last Minute Change | التغيير في اللحظة الأخيرة | Son Dakika Değişikliği | Изменение в последнюю минуту | تغییر لحظه‌ی آخر |
+| F025 | Load Summary | ملخص الحمولة | Yük Özeti | Сводка загрузки | خلاصه‌ی بار |
+| F026 | Baggage Distribution | توزيع الأمتعة | Bagaj Dağılımı | Распределение багажа | توزیع چمدان |
+| F027 | Cargo Distribution | توزيع الشحن | Kargo Dağılımı | Распределение груза | توزیع بار هوایی |
+
+### Dangerous goods · البضائع الخطرة · Tehlikeli maddeler · Опасные грузы · کالای خطرناک
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F030 ⚙ | NOTOC (Notification to Captain) | إشعار القائد | Kaptana Bildirim | Уведомление командиру | اعلام به کاپیتان |
+| F031 | DG Acceptance Checklist | قائمة قبول البضائع الخطرة | TM Kabul Kontrol Listesi | Чек-лист приёма опасных грузов | چک‌لیست پذیرش DG |
+| F032 | DG Declaration | إقرار البضائع الخطرة | TM Beyanı | Декларация опасных грузов | اظهارنامه‌ی DG |
+
+### Ground handling, fuel, catering · المناولة والوقود والتموين · Yer hizmetleri, yakıt, ikram · Наземное обслуживание · خدمات زمینی، سوخت، پذیرایی
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F040 | Turnaround Checklist | قائمة فحص الاستدارة | Turnaround Kontrol Listesi | Чек-лист оборота | چک‌لیست turnaround |
+| F041 | Ramp Task Sheet | ورقة مهام الساحة | Apron Görev Föyü | Задание перронной бригаде | برگه‌ی وظایف رمپ |
+| F042 | Pushback Record | سجل الدفع للخلف | Pushback Kaydı | Запись буксировки | سابقه‌ی pushback |
+| F043 | GSE Request | طلب معدات أرضية | GSE Talebi | Заявка на спецтехнику | درخواست تجهیزات زمینی |
+| F044 | Ground Damage Report | تقرير أضرار أرضية | Yer Hasar Raporu | Отчёт о наземном повреждении | گزارش آسیب زمینی |
+| F045 | Fuel Order | أمر التزود بالوقود | Yakıt Siparişi | Заявка на заправку | سفارش سوخت |
+| F046 | Catering Order | أمر التموين | İkram Siparişi | Заявка на кейтеринг | سفارش پذیرایی |
+| F047 | Water / Lavatory Service | خدمة المياه ودورات المياه | Su / Tuvalet Servisi | Обслуживание воды и туалетов | سرویس آب و توالت |
+
+### Border and airport · الحدود والمطار · Sınır ve havalimanı · Границы и аэропорт · مرزی و فرودگاهی
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F050 | General Declaration (GenDec) | الإقرار العام | Genel Beyan | Генеральная декларация | اظهارنامه‌ی عمومی |
+| F051 | Customs Declaration | الإقرار الجمركي | Gümrük Beyanı | Таможенная декларация | اظهارنامه‌ی گمرکی |
+| F052 | Immigration Manifest | كشف الجوازات | Pasaport Manifestosu | Иммиграционный список | مانیفست گذرنامه |
+| F053 | PPR Request | طلب إذن مسبق | PPR Talebi | Запрос PPR | درخواست PPR |
+| F054 | Slot Request | طلب حصة زمنية | Slot Talebi | Запрос слота | درخواست اسلات |
+
+### Maintenance and safety · الصيانة والسلامة · Bakım ve emniyet · ТО и безопасность · نگهداری و ایمنی
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F060 | Technical Log Reference | مرجع السجل الفني | Teknik Kayıt Referansı | Ссылка на техбортжурнал | ارجاع لاگ فنی |
+| F061 | Cabin Defect Report | تقرير عيوب المقصورة | Kabin Arıza Raporu | Отчёт о дефекте салона | گزارش نقص کابین |
+| F062 | Maintenance Delay Report | تقرير تأخير الصيانة | Bakım Gecikme Raporu | Отчёт о задержке по ТО | گزارش تأخیر نگهداری |
+| F063 | Safety / Occurrence Report | تقرير السلامة والحوادث | Emniyet / Olay Raporu | Отчёт о происшествии | گزارش ایمنی و رخداد |
+| F064 | Ground Incident Report | تقرير حادث أرضي | Yer Olay Raporu | Отчёт о наземном инциденте | گزارش سانحه‌ی زمینی |
+
+### Reporting · التقارير · Raporlama · Отчётность · گزارش‌گیری
+
+| | English | العربية | Türkçe | Русский | فارسی |
+|---|---|---|---|---|---|
+| F070 | Delay Report | تقرير التأخير | Gecikme Raporu | Отчёт о задержке | گزارش تأخیر |
+| F071 | Flight Operations Report | تقرير عمليات الطيران | Uçuş Harekât Raporu | Отчёт по лётной эксплуатации | گزارش عملیات پرواز |
+| F072 | Daily Station Report | التقرير اليومي للمحطة | Günlük İstasyon Raporu | Суточный отчёт станции | گزارش روزانه‌ی ایستگاه |
+| F073 | Audit Report | تقرير التدقيق | Denetim Raporu | Отчёт аудита | گزارش ممیزی |
+
+---
+
 <div align="center">
 
 **Keywords** · aircraft weight and balance software · free loadsheet software ·
