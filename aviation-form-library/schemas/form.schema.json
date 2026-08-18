@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://airload.local/schemas/form-definition.schema.json",
+  "title": "Aviation Form Definition",
+  "description": "Validates the structure of a form definition template in the aviation-form-library.",
+  "type": "object",
+  "required": [
+    "formCode",
+    "name",
+    "version",
+    "category",
+    "status",
+    "sourceStatus",
+    "fields",
+    "workflow"
+  ],
+  "properties": {
+    "formCode": {
+      "type": "string",
+      "pattern": "^F\\d{3}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "dispatch",
+        "passenger",
+        "crew",
+        "checkin",
+        "boarding",
+        "loadcontrol",
+        "dangerous_goods",
+        "ground",
+        "fuel",
+        "catering",
+        "border",
+        "airport",
+        "maintenance",
+        "safety",
+        "reporting"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["DRAFT", "ACTIVE", "DEPRECATED", "RETIRED"]
+    },
+    "sourceStatus": {
+      "type": "string",
+      "const": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL"
+    },
+    "description": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "type", "required"],
+        "properties": {
+          "name": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "integer", "boolean", "object", "array"]
+          },
+          "format": { "type": "string" },
+          "enum": { "type": "array" },
+          "required": { "type": "boolean" },
+          "default": {},
+          "minimum": { "type": "number" },
+          "maximum": { "type": "number" },
+          "minLength": { "type": "integer" },
+          "maxLength": { "type": "integer" },
+          "description": { "type": "string" },
+          "items": { "type": "object" },
+          "properties": { "type": "object" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "workflow": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string", "enum": ["DISPATCHER", "FLIGHT_OPS", "SENIOR_DISPATCHER", "PIC", "LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER", "LOAD_CONTROL_SYSTEM", "CHECKIN_AGENT", "SENIOR_AGENT", "GATE_AGENT", "SENIOR_GATE_AGENT", "DUTY_MANAGER", "BAGGAGE_AGENT", "BAGGAGE_SUPERVISOR", "CARGO_AGENT", "CARGO_SUPERVISOR", "DG_AGENT", "DG_OFFICER", "DG_SUPERVISOR", "RAMP_AGENT", "RAMP_SUPERVISOR", "TURNAROUND_COORDINATOR", "GROUND_HANDLER", "STATION_AGENT", "STATION_MANAGER", "FUEL_COORDINATOR", "REFUELER", "FUEL_SUPPLIER", "CATERING_COORDINATOR", "SERVICE_PROVIDER", "CREW", "PURSER", "CABIN_CREW", "ENGINEER", "MAINTENANCE_CONTROL", "MAINTENANCE_MANAGER", "SAFETY", "SAFETY_MANAGER", "RELIABILITY", "AUDITOR", "AUDIT_MANAGER", "QUALITY_MANAGER", "SLOT_COORDINATOR", "SCHEDULING", "OPERATIONS_CONTROL", "FLIGHT_OPS_MANAGER", "MANAGEMENT", "ALL", "PASSENGER", "GUARDIANS", "SHIPPER", "AUTHORITIES", "CUSTOMS_OFFICER", "IMMIGRATION_AUTHORITY", "AIRPORT_AUTHORITY", "COORDINATOR", "CAA", "EXEMPTION_HOLDER"] }
+      }
+    },
+    "validationRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "rule", "message"],
+        "properties": {
+          "field": { "type": "string" },
+          "rule": { "type": "string" },
+          "value": {},
+          "refField": { "type": "string" },
+          "min": { "type": "number" },
+          "max": { "type": "number" },
+          "minRef": { "type": "string" },
+          "maxRef": { "type": "string" },
+          "condition": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "uiMetadata": {
+      "type": "object",
+      "required": ["layout", "sections"],
+      "properties": {
+        "layout": { "type": "string" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "fields"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "fields": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "pdfMetadata": {
+      "type": "object",
+      "required": ["template", "pageSize", "orientation"],
+      "properties": {
+        "template": { "type": "string" },
+        "pageSize": { "type": "string", "enum": ["A4", "LETTER"] },
+        "orientation": { "type": "string", "enum": ["portrait", "landscape"] },
+        "multiPage": { "type": "boolean", "default": false },
+        "copies": { "type": "integer", "minimum": 1 },
+        "distribution": { "type": "array", "items": { "type": "string" } },
+        "fieldsMapping": { "type": "object" }
+      }
+    },
+    "auditRequired": {
+      "type": "boolean"
+    },
+    "sourceReference": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

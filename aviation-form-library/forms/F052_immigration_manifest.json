@@ -1,0 +1,158 @@
+{
+  "formCode": "F052",
+  "name": "Immigration Manifest",
+  "version": "1.0",
+  "category": "border",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Immigration manifest for border control. Provides passenger/crew arrival or departure manifest to immigration authorities per State requirements.",
+  "fields": [
+    {
+      "name": "manifestNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "manifestType",
+      "type": "string",
+      "required": true,
+      "enum": ["ARRIVAL", "DEPARTURE"]
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["DRAFT", "SUBMITTED", "VERIFIED", "CLEARED"],
+      "default": "DRAFT"
+    },
+    {
+      "name": "authorityReferenceNumber",
+      "type": "string",
+      "required": false,
+      "description": "Reference number assigned by immigration authority"
+    },
+    {
+      "name": "createdBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "createdTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "passengers",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "givenName": { "type": "string", "minLength": 1 },
+          "familyName": { "type": "string", "minLength": 1 },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["M", "F", "X", "U"] },
+          "nationality": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "passportNumber": { "type": "string" },
+          "passportCountry": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "passportExpiry": { "type": "string", "format": "date" },
+          "visaNumber": { "type": "string" },
+          "visaCountry": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "visaExpiry": { "type": "string", "format": "date" },
+          "seat": { "type": "string" },
+          "travelPurpose": { "type": "string", "enum": ["TOURISM", "BUSINESS", "EMPLOYMENT", "STUDY", "TRANSIT", "OTHER"] },
+          "addressInCountry": { "type": "string" },
+          "visaOnArrival": { "type": "boolean", "default": false },
+          "boardingClass": { "type": "string", "enum": ["F", "C", "Y"] }
+        },
+        "required": ["givenName", "familyName", "dateOfBirth", "nationality", "passportNumber", "passportCountry"]
+      }
+    },
+    {
+      "name": "totalPassengers",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "SUBMITTED",
+    "VERIFIED",
+    "CLEARED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DCS_SYSTEM", "FLIGHT_OPS", "STATION_AGENT"],
+    "submit": ["STATION_AGENT", "FLIGHT_OPS", "DCS_SYSTEM"],
+    "verify": ["AUTHO_AUTHORITY", "IMMIGRATION_AUTHORITY"],
+    "clear": ["IMMIGRATION_AUTHORITY"],
+    "view": ["AUTHORITIES", "FLIGHT_OPS", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "passengers", "rule": "not_empty", "message": "Manifest must contain at least one passenger" }
+  ],
+  "uiMetadata": {
+    "layout": "immigration_manifest",
+    "sections": [
+      { "id": "header", "label": "Manifest Identification", "fields": ["manifestNumber", "flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate", "manifestType", "status"] },
+      { "id": "passengers", "label": "Passenger List", "fields": ["passengers"] },
+      { "id": "summary", "label": "Summary", "fields": ["totalPassengers"] },
+      { "id": "authorization", "label": "Preparation & Authority", "fields": ["preparedBy", "preparedTime", "authorityReferenceNumber"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "immigration_manifest",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 9 (FAL 10/13), State immigration regulations",
+  "notes": "Immigration manifest formats defined per State requirements. Some States require electronic submission (API/PNR). Verify current requirements."
+}

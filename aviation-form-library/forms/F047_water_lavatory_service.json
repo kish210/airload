@@ -1,0 +1,229 @@
+{
+  "formCode": "F047",
+  "name": "Water/Lavatory Service",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Potable water filling and lavatory service record. Tracks water uplift quantities, lavatory drainage, potable water quality checks, and service coordination.",
+  "fields": [
+    {
+      "name": "serviceNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "stand",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "serviceProvider",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "potableWater",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "refillRequired": { "type": "boolean", "default": false },
+        "removedLitres": { "type": "number", "minimum": 0 },
+        "addedLitres": { "type": "number", "minimum": 0 },
+        "totalLitresInAircraft": { "type": "number", "minimum": 0 },
+        "waterFillingStartTime": { "type": "string", "format": "date-time" },
+        "waterFillingEndTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "potableWaterQuality",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "qualityCertificateRef": { "type": "string" },
+        "chlorineTestPassed": { "type": "boolean", "default": false },
+        "bacteriologicalTestPassed": { "type": "boolean", "default": false },
+        "testedBy": { "type": "string" },
+        "testDate": { "type": "string", "format": "date" }
+      }
+    },
+    {
+      "name": "lavatoryService",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "drainedRequired": { "type": "boolean", "default": false },
+        "lavatoriesServiced": { "type": "integer", "minimum": 0 },
+        "lavatoriesOnBoard": { "type": "integer", "minimum": 0 },
+        "wasteRemovedLitres": { "type": "number", "minimum": 0 },
+        "blueJuiceAddedLitres": { "type": "number", "minimum": 0 },
+        "startTime": { "type": "string", "format": "date-time" },
+        "endTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "equipmentUsed",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "equipmentType": { "type": "string", "enum": ["WATER_TRUCK", "LAVATORY_TRUCK", "OTHER"] },
+          "truckNumber": { "type": "string" },
+          "waterSource": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "serviceSchedule",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "scheduledTime": { "type": "string", "format": "date-time" },
+        "requiredOnboardTime": { "type": "string", "format": "date-time" },
+        "targetDeparture": { "type": "string", "format": "date-time" },
+        "completedBeforeDeparture": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "shortages",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string" },
+          "shortageQuantity": { "type": "number" },
+          "reportedTo": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "anomalies",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "description": { "type": "string" },
+          "resolved": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "charges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "waterCharges": { "type": "number", "minimum": 0 },
+        "lavatoryCharges": { "type": "number", "minimum": 0 },
+        "total": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "billingReference": { "type": "string" }
+      }
+    },
+    {
+      "name": "completed",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "completedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "completedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "confirmedByRamp",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "confirmedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "REQUESTED",
+    "SCHEDULED",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "VERIFIED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["TURNAROUND_COORDINATOR", "STATION_AGENT"],
+    "schedule": ["GROUND_HANDLER", "STATION_AGENT"],
+    "perform": ["SERVICE_PROVIDER", "GROUND_HANDLER"],
+    "verify": ["RAMP_SUPERVISOR", "TURNAROUND_COORDINATOR"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "potableWaterQuality.qualityCertificateRef", "rule": "valid_if_refill", "message": "Potable water quality certificate required" },
+    { "field": "serviceSchedule.completedBeforeDeparture", "rule": "must_be_true", "message": "Service must complete before departure" }
+  ],
+  "uiMetadata": {
+    "layout": "water_lavatory_service",
+    "sections": [
+      { "id": "header", "label": "Service Identification", "fields": ["serviceNumber", "flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "operationalDate", "stand"] },
+      { "id": "water", "label": "Potable Water", "fields": ["potableWater"] },
+      { "id": "quality", "label": "Water Quality", "fields": ["potableWaterQuality"] },
+      { "id": "lavatory", "label": "Lavatory Service", "fields": ["lavatoryService"] },
+      { "id": "equipment", "label": "Equipment", "fields": ["equipmentUsed"] },
+      { "id": "schedule", "label": "Schedule", "fields": ["serviceSchedule"] },
+      { "id": "issues", "label": "Shortages & Anomalies", "fields": ["shortages", "anomalies"] },
+      { "id": "charges", "label": "Charges", "fields": ["charges"] },
+      { "id": "completion", "label": "Completion", "fields": ["completed", "completedTime", "completedBy", "confirmedByRamp", "confirmedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "water_lavatory_service",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": false,
+  "sourceReference": "WHO Guidelines for Drinking-Water Quality in Aircraft, Operator water quality procedures, IATA AHM 620",
+  "notes": "Potable water quality verification per operator water fleet management and WHO guidance. Notify ramp on completion."
+}

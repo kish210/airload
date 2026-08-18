@@ -1,0 +1,204 @@
+{
+  "formCode": "F071",
+  "name": "Flight Operations Report",
+  "version": "1.0",
+  "category": "reporting",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Flight operations report aggregating operational performance data for management and statistical reporting.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportPeriod",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "periodType": { "type": "string", "enum": ["DAILY", "WEEKLY", "MONTHLY", "QUARTERLY", "ANNUAL"] }
+      }
+    },
+    {
+      "name": "flightPerformance",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "flightsScheduled": { "type": "integer", "minimum": 0 },
+        "flightsOperated": { "type": "integer", "minimum": 0 },
+        "flightsCancelled": { "type": "integer", "minimum": 0 },
+        "flightsDiverted": { "type": "integer", "minimum": 0 },
+        "onTimePerformancePct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "meanDelayMinutes": { "type": "number", "minimum": 0 },
+        "revenueFlightHours": { "type": "number", "minimum": 0 },
+        "revenueFlightCycles": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "scheduleIntegrity",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "onTimeDeparturePct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "onTimeArrivalPct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "cancellationRatePct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    {
+      "name": "fuelPerformance",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "totalFuelUsedKg": { "type": "number", "minimum": 0 },
+        "plannedFuelKg": { "type": "number", "minimum": 0 },
+        "fuelOverageKg": { "type": "number" },
+        "fuelOverageCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "dispatches",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "dispatchesCount": { "type": "integer", "minimum": 0 },
+        "releaseApprovalRatePct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "averageDispatchTurnaroundMinutes": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "occurrences",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "safetyOccurrences": { "type": "integer", "minimum": 0 },
+        "safetyEventsPerFlight": { "type": "number", "minimum": 0 },
+        "groundIncidents": { "type": "integer", "minimum": 0 },
+        "inflightEvents": { "type": "integer", "minimum": 0 },
+        "technicalReportedDefects": { "type": "integer", "minimum": 0 },
+        "difDifficulty": { "type": "string" }
+      }
+    },
+    {
+      "name": "crewPerformance",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "crewFatigueReports": { "type": "integer", "minimum": 0 },
+        "sickLeaveCount": { "type": "integer", "minimum": 0 },
+        "scheduleDisruptions": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "utilization",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "aircraftUtilizationHours": { "type": "number", "minimum": 0 },
+        "fleetUtilizationPct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "aircraftOnGroundTime": { "type": "number", "minimum": 0 },
+        "onGroundReason": { "type": "string" }
+      }
+    },
+    {
+      "name": "costs",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "totalOperatingCost": { "type": "number", "minimum": 0 },
+        "unitCostPerBlockHour": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "operationalHighlights",
+      "type": "string",
+      "required": false,
+      "description": "Summary of significant operational events"
+    },
+    {
+      "name": "trends",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "metric": { "type": "string" },
+          "value": { "type": "string" },
+          "trend": { "type": "string", "enum": ["IMPROVING", "STABLE", "DECLINING"] }
+        }
+      }
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "reviewedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reviewedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["DRAFT", "REVIEWED", "APPROVED"],
+      "default": "DRAFT"
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "REVIEWED",
+    "APPROVED",
+    "DISTRIBUTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["FLIGHT_OPS_ANALYST", "OPERATIONS_CONTROL"],
+    "review": ["FLIGHT_OPS_MANAGER"],
+    "approve": ["DIRECTOR_OF_OPERATIONS"],
+    "view": ["MANAGEMENT", "BOARD", "REGULATORS"]
+  },
+  "validationRules": [
+    { "field": "reportPeriod.endDate", "rule": "after_or_equal", "refField": "reportPeriod.startDate", "message": "End date must be after start date" }
+  ],
+  "uiMetadata": {
+    "layout": "flight_operations_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["reportNumber", "reportPeriod"] },
+      { "id": "performance", "label": "Flight Performance", "fields": ["flightPerformance", "scheduleIntegrity"] },
+      { "id": "fuel", "label": "Fuel Performance", "fields": ["fuelPerformance", "dispatches"] },
+      { "id": "occurrences", "label": "Occurrences", "fields": ["occurrences"] },
+      { "id": "crew", "label": "Crew Performance", "fields": ["crewPerformance"] },
+      { "id": "utilization", "label": "Utilization", "fields": ["utilization"] },
+      { "id": "costs", "label": "Costs", "fields": ["costs"] },
+      { "id": "highlights", "label": "Highlights & Trends", "fields": ["operationalHighlights", "trends"] },
+      { "id": "authorization", "label": "Review & Approval", "fields": ["preparedBy", "preparedTime", "reviewedBy", "reviewedTime", "status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "flight_operations_report",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "Operator flight operations manual, ICAO Annex 6, Management reporting standards",
+  "notes": "Report feeds management and regulatory reviews. Definitions per operator's performance management manual."
+}

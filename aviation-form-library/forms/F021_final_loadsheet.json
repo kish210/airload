@@ -1,0 +1,345 @@
+{
+  "formCode": "F021",
+  "name": "Final Loadsheet",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Final loadsheet for departure. Authoritative weight and balance document signed by Load Control Officer and Captain. Based on IATA AHM 515/516.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "dryOperatingWeight",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "dryOperatingIndex",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "paxDistribution",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "businessClass": { "type": "integer", "minimum": 0 },
+        "economyClass": { "type": "integer", "minimum": 0 },
+        "premiumEconomy": { "type": "integer", "minimum": 0 },
+        "firstClass": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 },
+        "male": { "type": "integer", "minimum": 0 },
+        "female": { "type": "integer", "minimum": 0 },
+        "children": { "type": "integer", "minimum": 0 },
+        "infants": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "paxWeight",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "businessClassKg": { "type": "number" },
+        "economyClassKg": { "type": "number" },
+        "premiumEconomyKg": { "type": "number" },
+        "firstClassKg": { "type": "number" },
+        "totalKg": { "type": "number" }
+      }
+    },
+    {
+      "name": "baggage",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalPieces": { "type": "integer", "minimum": 0 },
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "distribution": {
+          "type": "object",
+          "properties": {
+            "forwardHold": { "type": "number", "minimum": 0 },
+            "aftHold": { "type": "number", "minimum": 0 },
+            "bulkHold": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+    {
+      "name": "cargo",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "distribution": {
+          "type": "object",
+          "properties": {
+            "forwardHold": { "type": "number", "minimum": 0 },
+            "aftHold": { "type": "number", "minimum": 0 },
+            "bulkHold": { "type": "number", "minimum": 0 },
+            "mainDeck": { "type": "number", "minimum": 0 }
+          }
+        },
+        "specialLoads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "description": { "type": "string" },
+              "weightKg": { "type": "number" },
+              "location": { "type": "string" },
+              "dgClass": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "mail",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "distribution": {
+          "type": "object",
+          "properties": {
+            "forwardHold": { "type": "number", "minimum": 0 },
+            "aftHold": { "type": "number", "minimum": 0 },
+            "bulkHold": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+    {
+      "name": "fuel",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "tripFuelKg": { "type": "number" },
+        "taxiFuelKg": { "type": "number" },
+        "contingencyFuelKg": { "type": "number" },
+        "alternateFuelKg": { "type": "number" },
+        "finalReserveFuelKg": { "type": "number" },
+        "extraFuelKg": { "type": "number" },
+        "totalFuelKg": { "type": "number" },
+        "fuelDensity": { "type": "number" }
+      }
+    },
+    {
+      "name": "calculatedWeights",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "zeroFuelWeightKg": { "type": "number" },
+        "zeroFuelIndex": { "type": "number" },
+        "takeoffWeightKg": { "type": "number" },
+        "takeoffIndex": { "type": "number" },
+        "landingWeightKg": { "type": "number" },
+        "landingIndex": { "type": "number" }
+      }
+    },
+    {
+      "name": "limits",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "maxZeroFuelWeightKg": { "type": "number" },
+        "maxTakeoffWeightKg": { "type": "number" },
+        "maxLandingWeightKg": { "type": "number" },
+        "maxZeroFuelIndex": { "type": "number" },
+        "minZeroFuelIndex": { "type": "number" },
+        "maxTakeoffIndex": { "type": "number" },
+        "minTakeoffIndex": { "type": "number" }
+      }
+    },
+    {
+      "name": "underload",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "zfwUnderloadKg": { "type": "number" },
+        "towUnderloadKg": { "type": "number" },
+        "lwUnderloadKg": { "type": "number" }
+      }
+    },
+    {
+      "name": "trimSheetRef",
+      "type": "string",
+      "required": false,
+      "description": "Reference to associated trim sheet"
+    },
+    {
+      "name": "loadInstructionReportRef",
+      "type": "string",
+      "required": false,
+      "description": "Reference to associated LIR"
+    },
+    {
+      "name": "lastMinuteChanges",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "time": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
+          "weightChangeKg": { "type": "number" },
+          "indexChange": { "type": "number" },
+          "authorizedBy": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "loadControlOfficer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "lcoSignature",
+      "type": "string",
+      "required": false,
+      "format": "base64"
+    },
+    {
+      "name": "lcoTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "captainSignature",
+      "type": "string",
+      "required": false,
+      "format": "base64"
+    },
+    {
+      "name": "captainTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "version",
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    {
+      "name": "supersedes",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPUTED",
+    "REVIEWED",
+    "LCO_SIGNED",
+    "CAPTAIN_SIGNED",
+    "FINALIZED",
+    "SUPERSEDED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "LOAD_CONTROL_SYSTEM"],
+    "compute": ["LOAD_CONTROLLER", "LOAD_CONTROL_SYSTEM"],
+    "review": ["SENIOR_LOAD_CONTROLLER", "LOAD_CONTROL_SUPERVISOR"],
+    "lco_sign": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "captain_sign": ["CAPTAIN"],
+    "supersede": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS", "MANAGEMENT", "AUTHORITIES"]
+  },
+  "validationRules": [
+    { "field": "calculatedWeights.zeroFuelWeightKg", "rule": "less_than_or_equal", "refField": "limits.maxZeroFuelWeightKg", "message": "ZFW exceeds maximum" },
+    { "field": "calculatedWeights.takeoffWeightKg", "rule": "less_than_or_equal", "refField": "limits.maxTakeoffWeightKg", "message": "TOW exceeds maximum" },
+    { "field": "calculatedWeights.landingWeightKg", "rule": "less_than_or_equal", "refField": "limits.maxLandingWeightKg", "message": "LW exceeds maximum" },
+    { "field": "calculatedWeights.zeroFuelIndex", "rule": "between", "minRef": "limits.minZeroFuelIndex", "maxRef": "limits.maxZeroFuelIndex", "message": "ZFW index out of limits" },
+    { "field": "calculatedWeights.takeoffIndex", "rule": "between", "minRef": "limits.minTakeoffIndex", "maxRef": "limits.maxTakeoffIndex", "message": "TOW index out of limits" },
+    { "field": "lcoSignature", "rule": "required_if", "condition": "workflow == 'LCO_SIGNED'", "message": "LCO signature required" },
+    { "field": "captainSignature", "rule": "required_if", "condition": "workflow == 'CAPTAIN_SIGNED'", "message": "Captain signature required for finalization" }
+  ],
+  "uiMetadata": {
+    "layout": "final_loadsheet",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "scheduledDeparture", "actualDeparture"] },
+      { "id": "dow", "label": "Dry Operating Weight", "fields": ["dryOperatingWeight", "dryOperatingIndex"] },
+      { "id": "pax", "label": "Passengers", "fields": ["paxDistribution", "paxWeight"] },
+      { "id": "baggage", "label": "Baggage", "fields": ["baggage"] },
+      { "id": "cargo", "label": "Cargo & Mail", "fields": ["cargo", "mail"] },
+      { "id": "fuel", "label": "Fuel", "fields": ["fuel"] },
+      { "id": "calculated", "label": "Calculated Weights & CG", "fields": ["calculatedWeights"] },
+      { "id": "limits", "label": "Limits & Underload", "fields": ["limits", "underload"] },
+      { "id": "references", "label": "References", "fields": ["trimSheetRef", "loadInstructionReportRef"] },
+      { "id": "lmc", "label": "Last Minute Changes", "fields": ["lastMinuteChanges"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["loadControlOfficer", "lcoSignature", "lcoTime", "captainName", "captainSignature", "captainTime", "version", "supersedes"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "final_loadsheet",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "copies": 3,
+    "distribution": ["Captain", "Load Control", "Station File"],
+    "fieldsMapping": {
+      "takeoffWeightKg": "TOW",
+      "zeroFuelWeightKg": "ZFW",
+      "takeoffIndex": "TOW Index",
+      "captainSignature": "Captain Signature"
+    }
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 515, AHM 516, ICAO Annex 6, Operator W&B manual",
+  "notes": "Final loadsheet is the authoritative W&B document. Must be signed by LCO and Captain before departure. Any changes require new loadsheet."
+}

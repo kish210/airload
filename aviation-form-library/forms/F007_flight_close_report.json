@@ -1,0 +1,212 @@
+{
+  "formCode": "F007",
+  "name": "Flight Close Report",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Post-flight summary report capturing actual times, fuel consumption, delays, and operational discrepancies.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "scheduledArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "blockTime",
+      "type": "number",
+      "required": true,
+      "description": "Block time in minutes"
+    },
+    {
+      "name": "flightTime",
+      "type": "number",
+      "required": true,
+      "description": "Flight time in minutes"
+    },
+    {
+      "name": "fuelPlan",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "plannedTripFuel": { "type": "number" },
+        "actualTripFuel": { "type": "number" },
+        "plannedTotalFuel": { "type": "number" },
+        "actualTotalFuel": { "type": "number" },
+        "fuelDifference": { "type": "number" }
+      }
+    },
+    {
+      "name": "passengerCount",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "cargoWeightKg",
+      "type": "number",
+      "required": false,
+      "minimum": 0
+    },
+    {
+      "name": "delayCode",
+      "type": "string",
+      "required": false,
+      "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+      "description": "IATA delay code"
+    },
+    {
+      "name": "delayMinutes",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "delayReason",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "discrepancies",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "enum": ["TECHNICAL", "OPERATIONAL", "WEATHER", "ATC", "PASSENGER", "CARGO", "SECURITY", "OTHER"] },
+          "description": { "type": "string" },
+          "severity": { "type": "string", "enum": ["MINOR", "MAJOR", "CRITICAL"] },
+          "resolved": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "crewDutyTimes",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "captainDutyStart": { "type": "string", "format": "date-time" },
+        "captainDutyEnd": { "type": "string", "format": "date-time" },
+        "foDutyStart": { "type": "string", "format": "date-time" },
+        "foDutyEnd": { "type": "string", "format": "date-time" },
+        "cabinCrewDutyStart": { "type": "string", "format": "date-time" },
+        "cabinCrewDutyEnd": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "reportPreparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "captainReviewed",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "REVIEWED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "FLIGHT_OPS"],
+    "complete": ["DISPATCHER", "FLIGHT_OPS"],
+    "review": ["SENIOR_DISPATCHER", "FLIGHT_OPS_MANAGER", "PIC"],
+    "finalize": ["FLIGHT_OPS_MANAGER"],
+    "view": ["FLIGHT_OPS", "MANAGEMENT", "CREW", "SAFETY"]
+  },
+  "validationRules": [
+    { "field": "actualDeparture", "rule": "after_or_equal", "refField": "scheduledDeparture", "message": "Actual departure cannot be before scheduled" },
+    { "field": "actualArrival", "rule": "after", "refField": "actualDeparture", "message": "Arrival must be after departure" },
+    { "field": "blockTime", "rule": "positive", "message": "Block time must be positive" }
+  ],
+  "uiMetadata": {
+    "layout": "flight_close_report",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "operationalDate"] },
+      { "id": "times", "label": "Times", "fields": ["scheduledDeparture", "actualDeparture", "scheduledArrival", "actualArrival", "blockTime", "flightTime"] },
+      { "id": "fuel", "label": "Fuel Analysis", "fields": ["fuelPlan"] },
+      { "id": "load", "label": "Load", "fields": ["passengerCount", "cargoWeightKg"] },
+      { "id": "delays", "label": "Delays", "fields": ["delayCode", "delayMinutes", "delayReason"] },
+      { "id": "discrepancies", "label": "Discrepancies", "fields": ["discrepancies"] },
+      { "id": "crew", "label": "Crew Duty Times", "fields": ["crewDutyTimes"] },
+      { "id": "signatures", "label": "Report", "fields": ["reportPreparedBy", "reportTime", "captainReviewed", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "flight_close_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6, IATA Delay Coding, Operator post-flight reporting",
+  "notes": "Close report due within 2 hours of arrival. Discrepancies require follow-up per SMS procedures."
+}

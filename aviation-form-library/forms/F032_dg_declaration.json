@@ -1,0 +1,164 @@
+{
+  "formCode": "F032",
+  "name": "DG Declaration",
+  "version": "1.0",
+  "category": "dangerous_goods",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Shipper's Declaration for Dangerous Goods per IATA DGR. Certifies the consignment complies with all applicable regulations.",
+  "fields": [
+    {
+      "name": "declarationNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "shipper",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "companyName": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "countryCode": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "contactPerson": { "type": "string" },
+        "phone": { "type": "string" },
+        "shipperAccountNumber": { "type": "string" }
+      }
+    },
+    {
+      "name": "consignee",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "companyName": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "countryCode": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "contactPerson": { "type": "string" },
+        "phone": { "type": "string" },
+        "consigneeAccountNumber": { "type": "string" }
+      }
+    },
+    {
+      "name": "airWaybill",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "airWaybillNumber": { "type": "string" },
+        "airportOfDeparture": { "type": "string", "format": "icao_code" },
+        "airportOfDestination": { "type": "string", "format": "icao_code" },
+        "flightDate": { "type": "string", "format": "date" }
+      }
+    },
+    {
+      "name": "aircraftTypeLimitation",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "passengerAircraft": { "type": "boolean", "default": false },
+        "cargoAircraftOnly": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "dgEntries",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "unId": { "type": "string" },
+          "properShippingName": { "type": "string" },
+          "technicalName": { "type": "string" },
+          "className": { "type": "string" },
+          "subsidiaryRisk": { "type": "string" },
+          "packingGroup": { "type": "string" },
+          "numberOfPackages": { "type": "integer", "minimum": 1 },
+          "packingInstruction": { "type": "string" },
+          "packagingType": { "type": "string" },
+          "quantity": { "type": "number" },
+          "quantityUnit": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "radioactiveMaterials",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "unId": { "type": "string" },
+          "className": { "type": "string" },
+          "properShippingName": { "type": "string" },
+          "quantity": { "type": "number" },
+          "transportIndex": { "type": "number" },
+          "category": { "type": "string", "enum": ["I_WHITE", "II_YELLOW", "III_YELLOW"] }
+        }
+      }
+    },
+    {
+      "name": "certification",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "certificationStatement": { "type": "string" },
+        "additionalHandling": { "type": "string" },
+        "shipperName": { "type": "string" },
+        "shipperSignature": { "type": "string", "format": "base64" },
+        "date": { "type": "string", "format": "date" },
+        "place": { "type": "string" }
+      }
+    },
+    {
+      "name": "handlingInformation",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "REVIEWED",
+    "SIGNED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["SHIPPER", "DG_AGENT"],
+    "complete": ["SHIPPER", "DG_AGENT"],
+    "review": ["DG_OFFICER", "CARGO_SUPERVISOR"],
+    "sign": ["SHIPPER", "AUTHORIZED_SHIPPER_REP"],
+    "view": ["CARGO", "LOAD_CONTROL", "SAFETY", "AUTHORITIES"]
+  },
+  "validationRules": [
+    { "field": "certification.shipperSignature", "rule": "required", "message": "Shipper signature required" },
+    { "field": "dgEntries", "rule": "not_empty", "message": "At least one DG entry required" }
+  ],
+  "uiMetadata": {
+    "layout": "dg_declaration",
+    "sections": [
+      { "id": "header", "label": "Declaration Identification", "fields": ["declarationNumber", "operationalDate"] },
+      { "id": "parties", "label": "Shipper & Consignee", "fields": ["shipper", "consignee"] },
+      { "id": "awb", "label": "Air Waybill Details", "fields": ["airWaybill"] },
+      { "id": "limitation", "label": "Aircraft Type Limitation", "fields": ["aircraftTypeLimitation"] },
+      { "id": "entries", "label": "Dangerous Goods Entries", "fields": ["dgEntries"] },
+      { "id": "radioactive", "label": "Radioactive Materials", "fields": ["radioactiveMaterials"] },
+      { "id": "handling", "label": "Additional Handling Information", "fields": ["handlingInformation"] },
+      { "id": "certification", "label": "Shipper's Certification", "fields": ["certification"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "shippers_declaration",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA DGR Section 8, ICAO Technical Instructions",
+  "notes": "Certification statement text must match DGR 8.1.6.10 exactly per applicable edition. Declaration retained with AWB record."
+}

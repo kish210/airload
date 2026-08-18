@@ -1,0 +1,287 @@
+﻿{
+  "version": "2.0",
+  "forms": [
+    {
+      "code": "F001",
+      "name": "Flight Plan",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F002",
+      "name": "Operational Flight Plan",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F003",
+      "name": "Flight Release",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F004",
+      "name": "Dispatch Briefing",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F005",
+      "name": "Flight Watch Log",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F006",
+      "name": "Diversion Record",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F007",
+      "name": "Flight Close Report",
+      "category": "dispatch",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F010",
+      "name": "Passenger Manifest",
+      "category": "passenger",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F011",
+      "name": "Crew Manifest",
+      "category": "crew",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F012",
+      "name": "Check-in Record",
+      "category": "checkin",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F013",
+      "name": "Boarding Reconciliation",
+      "category": "boarding",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F014",
+      "name": "Passenger Irregularity",
+      "category": "passenger",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F015",
+      "name": "Special Service Request",
+      "category": "passenger",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F016",
+      "name": "Unaccompanied Minor Record",
+      "category": "passenger",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F020",
+      "name": "Preliminary Loadsheet",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F021",
+      "name": "Final Loadsheet",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F022",
+      "name": "Load Instruction Report",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F023",
+      "name": "Trim Sheet",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F024",
+      "name": "Last Minute Change",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F025",
+      "name": "Load Summary",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F026",
+      "name": "Baggage Distribution",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F027",
+      "name": "Cargo Distribution",
+      "category": "loadcontrol",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F030",
+      "name": "NOTOC",
+      "category": "dangerous_goods",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F031",
+      "name": "DG Acceptance Checklist",
+      "category": "dangerous_goods",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F032",
+      "name": "DG Declaration",
+      "category": "dangerous_goods",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F040",
+      "name": "Turnaround Checklist",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F041",
+      "name": "Ramp Task Sheet",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F042",
+      "name": "Pushback Record",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F043",
+      "name": "GSE Request",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F044",
+      "name": "Ground Damage Report",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F045",
+      "name": "Fuel Order",
+      "category": "fuel",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F046",
+      "name": "Catering Order",
+      "category": "catering",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F047",
+      "name": "Water/Lavatory Service",
+      "category": "ground",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F050",
+      "name": "General Declaration",
+      "category": "border",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F051",
+      "name": "Customs Declaration",
+      "category": "border",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F052",
+      "name": "Immigration Manifest",
+      "category": "border",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F053",
+      "name": "PPR Request",
+      "category": "airport",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F054",
+      "name": "Slot Request",
+      "category": "airport",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F060",
+      "name": "Technical Log Reference",
+      "category": "maintenance",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F061",
+      "name": "Cabin Defect Report",
+      "category": "maintenance",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F062",
+      "name": "Maintenance Delay Report",
+      "category": "maintenance",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F063",
+      "name": "Safety/Occurrence Report",
+      "category": "safety",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F064",
+      "name": "Ground Incident Report",
+      "category": "safety",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F070",
+      "name": "Delay Report",
+      "category": "reporting",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F071",
+      "name": "Flight Operations Report",
+      "category": "reporting",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F072",
+      "name": "Daily Station Report",
+      "category": "reporting",
+      "status": "ACTIVE"
+    },
+    {
+      "code": "F073",
+      "name": "Audit Report",
+      "category": "reporting",
+      "status": "ACTIVE"
+    }
+  ]
+}

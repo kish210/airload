@@ -1,0 +1,198 @@
+{
+  "formCode": "F003",
+  "name": "Flight Release",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Flight Release / Dispatch Release authorizing flight departure. Per ICAO Annex 6 and FAA/EASA operational requirements.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "alternateAirport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "releaseNumber",
+      "type": "string",
+      "required": true,
+      "description": "Unique release sequence number"
+    },
+    {
+      "name": "releaseStatus",
+      "type": "string",
+      "required": true,
+      "enum": ["PENDING", "RELEASED", "HOLD", "CANCELLED"],
+      "default": "PENDING"
+    },
+    {
+      "name": "weatherBriefingCompleted",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "notamsReviewed",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "performanceVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "fuelVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "weightBalanceVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "crewsQualified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "aircraftAirworthy",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "melsChecked",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "specialConditions",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" },
+      "description": "Special conditions or restrictions"
+    },
+    {
+      "name": "dispatcherName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "dispatcherLicense",
+      "type": "string",
+      "required": false,
+      "description": "Dispatcher license/certificate number"
+    },
+    {
+      "name": "releaseTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "captainAcknowledged",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "PENDING_CHECKS",
+    "RELEASED",
+    "ACKNOWLEDGED",
+    "DEPARTED",
+    "CANCELLED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER"],
+    "verify_checks": ["DISPATCHER", "SENIOR_DISPATCHER"],
+    "release": ["DISPATCHER", "SENIOR_DISPATCHER"],
+    "acknowledge": ["PIC"],
+    "cancel": ["DISPATCHER", "SENIOR_DISPATCHER", "FLIGHT_OPS_MANAGER"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "releaseStatus", "rule": "release_checks_complete", "message": "All mandatory checks must be complete before release" },
+    { "field": "weatherBriefingCompleted", "rule": "must_be_true", "message": "Weather briefing required for release" },
+    { "field": "notamsReviewed", "rule": "must_be_true", "message": "NOTAM review required for release" }
+  ],
+  "uiMetadata": {
+    "layout": "flight_release",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "operationalDate", "releaseNumber"] },
+      { "id": "airports", "label": "Airports", "fields": ["departureAirport", "arrivalAirport", "alternateAirport", "scheduledDeparture"] },
+      { "id": "checks", "label": "Mandatory Checks", "fields": ["weatherBriefingCompleted", "notamsReviewed", "performanceVerified", "fuelVerified", "weightBalanceVerified", "crewsQualified", "aircraftAirworthy", "melsChecked"] },
+      { "id": "conditions", "label": "Special Conditions", "fields": ["specialConditions"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["dispatcherName", "dispatcherLicense", "releaseTime", "captainAcknowledged", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "flight_release",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6 Part I, FAA 121.533, EASA ORO.GEN.110",
+  "notes": "Release authority per operator certification. All checks mandatory unless waived per approved procedures."
+}

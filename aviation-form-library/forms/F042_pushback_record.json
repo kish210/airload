@@ -1,0 +1,236 @@
+{
+  "formCode": "F042",
+  "name": "Pushback Record",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Pushback operation record capturing timings, personnel, authorization, and any anomalies during pushback.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "stand",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "standRestrictions",
+      "type": "string",
+      "required": false,
+      "description": "Pushback direction/restrictions for stand"
+    },
+    {
+      "name": "pushbackDirection",
+      "type": "string",
+      "required": false,
+      "enum": ["LEFT", "RIGHT", "STRAIGHT", "SPECIFIC_ANGLE"]
+    },
+    {
+      "name": "pushbackCleared",
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "description": "When required by airport, pushback clearance from ATC or ground"
+    },
+    {
+      "name": "clearanceTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "clearanceReceivedFrom",
+      "type": "string",
+      "required": false,
+      "enum": ["TOWER", "GROUND", "APRON_CONTROL", "RAMP_CONTROL"]
+    },
+    {
+      "name": "pushbackTractor",
+      "type": "string",
+      "required": true,
+      "description": "Tractor ID/registration"
+    },
+    {
+      "name": "pushbackOperator",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "headsetOperator",
+      "type": "string",
+      "required": false,
+      "description": "Ground crew in headset contact with flight deck"
+    },
+    {
+      "name": "towbarUsed",
+      "type": "string",
+      "required": false,
+      "enum": ["TOWBAR", "TOWBARLESS"]
+    },
+    {
+      "name": "towbarSerial",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "pushbackStartTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "pushbackEndTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "pushbackDuration",
+      "type": "integer",
+      "required": false,
+      "description": "Duration in seconds"
+    },
+    {
+      "name": "brakeReleaseTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "brakeSetTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "engineStartAuthorized",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "anomalies",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["EQUIPMENT", "COMMUNICATION", "TIMING", "OBSTRUCTION", "OTHER"] },
+          "description": { "type": "string" },
+          "resolved": { "type": "boolean", "default": false },
+          "reportedTo": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "handoverToTaxi",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "handoverTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "recordedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "recordedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "confirmedByCaptain",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "SCHEDULED",
+    "CLEARANCE",
+    "PUSHBACK",
+    "DISCONNECTED",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["RAMP_AGENT", "PUSHBACK_OPERATOR", "GROUND_HANDLER"],
+    "clearance": ["RAMP_AGENT", "GROUND_HANDLER"],
+    "perform": ["PUSHBACK_OPERATOR"],
+    "confirm": ["RAMP_SUPERVISOR", "GROUND_HANDLER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "pushbackEndTime", "rule": "after", "refField": "pushbackStartTime", "message": "Pushback end must be after start" },
+    { "field": "pushbackCleared", "rule": "must_be_true", "message": "Pushback clearance required" }
+  ],
+  "uiMetadata": {
+    "layout": "pushback_record",
+    "sections": [
+      { "id": "header", "label": "Flight & Aircraft", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "stand", "standRestrictions", "pushbackDirection"] },
+      { "id": "clearance", "label": "Clearance", "fields": ["pushbackCleared", "clearanceTime", "clearanceReceivedFrom"] },
+      { "id": "equipment", "label": "Equipment & Personnel", "fields": ["pushbackTractor", "pushbackOperator", "headsetOperator", "towbarUsed", "towbarSerial"] },
+      { "id": "timing", "label": "Timing", "fields": ["pushbackStartTime", "pushbackEndTime", "pushbackDuration", "brakeReleaseTime", "brakeSetTime", "engineStartAuthorized"] },
+      { "id": "anomalies", "label": "Anomalies", "fields": ["anomalies"] },
+      { "id": "handover", "label": "Handover", "fields": ["handoverToTaxi", "handoverTime"] },
+      { "id": "authorization", "label": "Record & Confirmation", "fields": ["recordedBy", "recordedTime", "confirmedByCaptain", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "pushback_record",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 620, Airport ground movement regulations, Operator ramp procedures",
+  "notes": "Pushback clearance requirements application vary by airport. Report anomalies through SMS."
+}

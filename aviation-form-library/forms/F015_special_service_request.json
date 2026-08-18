@@ -1,0 +1,195 @@
+{
+  "formCode": "F015",
+  "name": "Special Service Request",
+  "version": "1.0",
+  "category": "passenger",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Special Service Request (SSR) for passenger assistance needs including mobility, medical, dietary, and other special handling requirements.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "passengerId",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "givenName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "familyName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "ssrCode",
+      "type": "string",
+      "required": true,
+      "enum": ["WCHR", "WCHS", "WCHC", "BLND", "DEAF", "DPNA", "MEDA", "OXGN", "STCR", "INFT", "UMNR", "MAAS", "PETC", "AVIH", "SVAN", "BSCT", "EXST", "LANG", "OTHS"],
+      "description": "IATA SSR code"
+    },
+    {
+      "name": "ssrDescription",
+      "type": "string",
+      "required": true,
+      "description": "Free text description of service request"
+    },
+    {
+      "name": "requestType",
+      "type": "string",
+      "required": true,
+      "enum": ["MOBILITY", "MEDICAL", "SENSORY", "COGNITIVE", "DIETARY", "ANIMAL", "BAGGAGE", "SEATING", "ASSISTANCE", "OTHER"]
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "required": true,
+      "enum": ["STANDARD", "HIGH", "URGENT"],
+      "default": "STANDARD"
+    },
+    {
+      "name": "requestedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "requestedBy",
+      "type": "string",
+      "required": true,
+      "enum": ["PASSENGER", "AGENT", "TRAVEL_AGENT", "AIRLINE", "MEDICAL_DEPT"]
+    },
+    {
+      "name": "medicalClearance",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "required": { "type": "boolean", "default": false },
+        "cleared": { "type": "boolean", "default": false },
+        "clearanceNumber": { "type": "string" },
+        "clearedBy": { "type": "string" },
+        "clearedAt": { "type": "string", "format": "date-time" },
+        "restrictions": { "type": "array", "items": { "type": "string" } },
+        "validUntil": { "type": "string", "format": "date" }
+      }
+    },
+    {
+      "name": "equipmentRequired",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "groundHandlingInstructions",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "inflightHandlingInstructions",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["REQUESTED", "CONFIRMED", "ARRANGED", "PROVIDED", "PARTIAL", "UNABLE", "CANCELLED"],
+      "default": "REQUESTED"
+    },
+    {
+      "name": "confirmedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "confirmedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "providedAtDeparture",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "providedAtArrival",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "feedback",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "REQUESTED",
+    "CONFIRMED",
+    "ARRANGED",
+    "PROVIDED",
+    "COMPLETED",
+    "CANCELLED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["PASSENGER", "CHECKIN_AGENT", "RESERVATIONS", "SPECIAL_ASSISTANCE_DESK"],
+    "confirm": ["SPECIAL_ASSISTANCE_DESK", "DUTY_MANAGER", "OPERATIONS_CONTROL"],
+    "arrange": ["GROUND_HANDLING", "SPECIAL_ASSISTANCE_DESK"],
+    "provide": ["GROUND_HANDLING", "CREW", "SPECIAL_ASSISTANCE_DESK"],
+    "view": ["PASSENGER", "CREW", "DISPATCHER", "GROUND_HANDLING", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "medicalClearance.required", "rule": "if_true_then_cleared", "message": "Medical clearance required but not obtained" },
+    { "field": "ssrCode", "rule": "valid_iata_ssr", "message": "Invalid IATA SSR code" }
+  ],
+  "uiMetadata": {
+    "layout": "special_service_request",
+    "sections": [
+      { "id": "header", "label": "Flight & Passenger", "fields": ["flightNumber", "airlineCode", "departureAirport", "arrivalAirport", "operationalDate", "passengerId", "givenName", "familyName"] },
+      { "id": "request", "label": "Service Request", "fields": ["ssrCode", "ssrDescription", "requestType", "priority", "requestedAt", "requestedBy"] },
+      { "id": "medical", "label": "Medical Clearance", "fields": ["medicalClearance"] },
+      { "id": "instructions", "label": "Handling Instructions", "fields": ["equipmentRequired", "groundHandlingInstructions", "inflightHandlingInstructions"] },
+      { "id": "fulfillment", "label": "Fulfillment", "fields": ["status", "confirmedAt", "confirmedBy", "providedAtDeparture", "providedAtArrival", "feedback"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "special_service_request",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Resolution 700, ICAO Annex 9, EC 1107/2006, US DOT 14 CFR 382",
+  "notes": "SSR codes per IATA standards. Medical clearance per operator medical department. Assistance per disability regulations."
+}

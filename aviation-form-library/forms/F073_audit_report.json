@@ -1,0 +1,210 @@
+{
+  "formCode": "F073",
+  "name": "Audit Report",
+  "version": "1.0",
+  "category": "reporting",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Audit report for internal or external audits of operational processes, ground handling, documentation, and compliance.",
+  "fields": [
+    {
+      "name": "auditReportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "auditTitle",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "auditType",
+      "type": "string",
+      "required": true,
+      "enum": ["INTERNAL", "EXTERNAL", "CAA", "EASA", "FAA", "ISO", "SMS_AUDIT", "ISAGO", "IOSA"]
+    },
+    {
+      "name": "auditScope",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "location": { "type": "string", "format": "icao_code" },
+        "department": { "type": "string" },
+        "process": { "type": "string" },
+        "functionalArea": { "type": "string" },
+        "contractorsIncluded": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "auditPeriod",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" }
+      }
+    },
+    {
+      "name": "auditTeam",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "auditorName": { "type": "string" },
+          "role": { "type": "string" },
+          "organization": { "type": "string" },
+          "qualification": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "references",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "manual": { "type": "string" },
+        "standard": { "type": "string" },
+        "regulation": { "type": "string" },
+        "clauseReferences": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "findings",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "findingNumber": { "type": "integer" },
+          "findingType": { "type": "string", "enum": ["NC_MAJOR", "NC_MINOR", "OBSERVATION", "OPPORTUNITY_FOR_IMPROVEMENT", "COMPLIANCE_NOTE"] },
+          "nonCompliance": { "type": "boolean", "default": false },
+          "location": { "type": "string" },
+          "reference": { "type": "string" },
+          "evidence": { "type": "string" },
+          "requirement": { "type": "string" },
+          "riskAssessment": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+          "correctiveActionRequired": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "auditResult",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "overallConclusion": { "type": "string" },
+        "rating": { "type": "string", "enum": ["SATISFACTORY", "CONDITIONALLY_SATISFACTORY", "UNSATISFACTORY"] },
+        "majorFindings": { "type": "integer", "minimum": 0 },
+        "minorFindings": { "type": "integer", "minimum": 0 },
+        "observations": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "correctiveActionPlan",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "findingNumber": { "type": "integer" },
+          "correctiveAction": { "type": "string" },
+          "assignedTo": { "type": "string" },
+          "dueDate": { "type": "string", "format": "date" },
+          "verificationMethod": { "type": "string" },
+          "status": { "type": "string", "enum": ["OPEN", "IN_PROGRESS", "VERIFIED", "CLOSED"] }
+        }
+      }
+    },
+    {
+      "name": "managementResponse",
+      "type": "string",
+      "required": false,
+      "description": "Response from audited party"
+    },
+    {
+      "name": "followUpAudit",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "required": { "type": "boolean", "default": false },
+        "followUpDate": { "type": "string", "format": "date" },
+        "followUpResult": { "type": "string" }
+      }
+    },
+    {
+      "name": "reportDistribution",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "approvedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "issueDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "auditStatus",
+      "type": "string",
+      "required": true,
+      "enum": ["PLANNED", "IN_PROGRESS", "COMPLETED", "CORRECTIVE_ACTIONS", "CLOSED"],
+      "default": "PLANNED"
+    }
+  ],
+  "workflow": [
+    "PLANNED",
+    "IN_PROGRESS",
+    "REPORT_DRAFT",
+    "REPORT_APPROVED",
+    "CORRECTIVE_ACTIONS",
+    "VERIFIED",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["AUDITOR", "QUALITY_AUDITOR", "AUDIT_MANAGER"],
+    "conduct": ["AUDITOR", "EXTERNAL_AUDITOR"],
+    "approve": ["AUDIT_MANAGER", "QUALITY_MANAGER"],
+    "corrective_action": ["AUDITED_PARTY", "DEPARTMENT_MANAGER"],
+    "close": ["AUDIT_MANAGER", "QUALITY_MANAGER"],
+    "view": ["MANAGEMENT", "AUDIT_COMMITTEE", "REGULATORS"]
+  },
+  "validationRules": [
+    { "field": "auditPeriod.endDate", "rule": "after_or_equal", "refField": "auditPeriod.startDate", "message": "Audit end date must be after start" },
+    { "field": "findings[*].correctiveActionRequired", "rule": "has_cap", "message": "Each finding requiring corrective action must have action plan entry" }
+  ],
+  "uiMetadata": {
+    "layout": "audit_report",
+    "sections": [
+      { "id": "header", "label": "Audit Identification", "fields": ["auditReportNumber", "auditTitle", "auditType"] },
+      { "id": "scope", "label": "Scope & Period", "fields": ["auditScope", "auditPeriod"] },
+      { "id": "team", "label": "Audit Team", "fields": ["auditTeam"] },
+      { "id": "references", "label": "References", "fields": ["references"] },
+      { "id": "findings", "label": "Findings", "fields": ["findings"] },
+      { "id": "result", "label": "Audit Result", "fields": ["auditResult"] },
+      { "id": "cap", "label": "Corrective Action Plan", "fields": ["correctiveActionPlan", "managementResponse"] },
+      { "id": "followup", "label": "Follow-up", "fields": ["followUpAudit"] },
+      { "id": "approval", "label": "Approval & Issue", "fields": ["preparedBy", "approvedBy", "issueDate", "reportDistribution", "auditStatus"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "audit_report",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "ISO 19011, IATA ISAGO, IOSA, State CAA requirements",
+  "notes": "Audit report formats vary by audit standard. Findings classification per applicable audit scheme."
+}

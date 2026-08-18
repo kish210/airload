@@ -1,0 +1,232 @@
+{
+  "formCode": "F026",
+  "name": "Baggage Distribution",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Baggage distribution plan and record for aircraft compartments. Used for load control W&B calculations and baggage reconciliation.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "baggageDistributionNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "compartments",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "compartment": { "type": "string", "enum": ["FORWARD", "AFT", "BULK", "LOWER_DECK_FWD", "LOWER_DECK_AFT", "MAIN_DECK"] },
+          "pieces": { "type": "integer", "minimum": 0 },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "maxCapacityPieces": { "type": "integer", "minimum": 0 },
+          "maxCapacityWeightKg": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    {
+      "name": "baggageCategories",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "checkedCount": { "type": "integer", "minimum": 0 },
+        "checkedWeightKg": { "type": "number", "minimum": 0 },
+        "gateCheckedCount": { "type": "integer", "minimum": 0 },
+        "gateCheckedWeightKg": { "type": "number", "minimum": 0 },
+        "carryOnCount": { "type": "integer", "minimum": 0 },
+        "infantBaggageCount": { "type": "integer", "minimum": 0 },
+        "sportsEquipmentCount": { "type": "integer", "minimum": 0 },
+        "oversizeCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "specialBaggage",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "tagNumber": { "type": "string" },
+          "type": { "type": "string", "enum": ["OVERSIZE", "SPORTS", "MUSICAL", "FRAGILE", "PERISHABLE", "VALUABLE", "ANIMAL", "PROPELANT", "LIVE"] },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "location": { "type": "string" },
+          "handlingInstructions": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "excessBaggage",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "excessBagRecords": { "type": "array", "items": { "type": "string" } },
+        "totalExcessWeightKg": { "type": "number", "minimum": 0 },
+        "totalExcessCharge": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "rushBaggage",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "tagNumber": { "type": "string" },
+          "pieces": { "type": "integer", "minimum": 1 },
+          "colorTag": { "type": "string" },
+          "requiredBy": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "transferBaggage",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "transferCount": { "type": "integer", "minimum": 0 },
+        "transferWeightKg": { "type": "number", "minimum": 0 },
+        "originFlights": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "totalBaggage",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalPieces": { "type": "integer", "minimum": 0 },
+        "totalWeightKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "sumCompartmentPieces",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "description": "Computed sum of pieces across all compartments"
+    },
+    {
+      "name": "sumCompartmentWeightKg",
+      "type": "number",
+      "required": false,
+      "minimum": 0,
+      "description": "Computed sum of weight across all compartments"
+    },
+    {
+      "name": "loadsheetReference",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "baggageAgentVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "verifiedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "verifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "DISTRIBUTED",
+    "VERIFIED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "BAGGAGE_AGENT"],
+    "distribute": ["LOAD_CONTROLLER", "BAGGAGE_AGENT", "GROUND_HANDLER"],
+    "verify": ["SENIOR_LOAD_CONTROLLER", "BAGGAGE_SUPERVISOR"],
+    "finalize": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "totalBaggage.totalPieces", "rule": "equals", "refField": "sumCompartmentPieces", "message": "Total pieces must match compartment sum" },
+    { "field": "totalBaggage.totalWeightKg", "rule": "equals", "refField": "sumCompartmentWeightKg", "message": "Total weight must match compartment sum" },
+    { "field": "compartments[*].pieces", "rule": "less_than_or_equal", "refField": "compartments[*].maxCapacityPieces", "message": "Compartment capacity exceeded" }
+  ],
+  "uiMetadata": {
+    "layout": "baggage_distribution",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "baggageDistributionNumber"] },
+      { "id": "compartments", "label": "Compartment Distribution", "fields": ["compartments"] },
+      { "id": "categories", "label": "Baggage Categories", "fields": ["baggageCategories"] },
+      { "id": "special", "label": "Special Baggage", "fields": ["specialBaggage"] },
+      { "id": "excess", "label": "Excess Baggage", "fields": ["excessBaggage"] },
+      { "id": "rush", "label": "Rush Baggage", "fields": ["rushBaggage"] },
+      { "id": "transfer", "label": "Transfer Baggage", "fields": ["transferBaggage"] },
+      { "id": "total", "label": "Total Baggage", "fields": ["totalBaggage"] },
+      { "id": "references", "label": "References", "fields": ["loadsheetReference"] },
+      { "id": "authorization", "label": "Verification", "fields": ["preparedBy", "preparedTime", "baggageAgentVerified", "verifiedBy", "verifiedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "baggage_distribution",
+    "pageSize": "A4",
+    "orientation": "landscape"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 515, Operator baggage handling procedures",
+  "notes": "Baggage distribution must match loadsheet. Changes require new loadsheet if within LMC window."
+}

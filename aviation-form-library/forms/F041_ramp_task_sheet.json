@@ -1,0 +1,198 @@
+{
+  "formCode": "F041",
+  "name": "Ramp Task Sheet",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Detailed ramp tasks assignment for ground crew. Includes marshalling, chocks, connections, de-icing, and departure tasks. Based on AHM 620.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "stand",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "rampAgent",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "taskSheetNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "arrivalTasks",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "task": { "type": "string", "enum": ["MARSHALLING", "CHOCKS", "GROUND_POWER", "AIR_CONDITIONING", "BEACON_OFF", "JETWAY_CONNECT", "STAIRS_CONNECT", "ENGINE_SHUTDOWN_CONFIRM", "WHEEL_WELL_CHECK", "GSE_POSITIONING"] },
+          "assignedTo": { "type": "string" },
+          "completed": { "type": "boolean", "default": false },
+          "completedTime": { "type": "string", "format": "date-time" },
+          "remarks": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "departureTasks",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "task": { "type": "string", "enum": ["GSE_DISCONNECT", "JETWAY_DISCONNECT", "STAIRS_DISCONNECT", "CHOCKS_REMOVED", "GROUND_POWER_DISCONNECT", "AIR_CONDITIONING_DISCONNECT", "BEACON_ON", "MARSHALLING_DISPATCH", "DE_ICING", "TOWING_CLEARANCE", "PUSHBACK_CLEARANCE", "FOD_CHECK"] },
+          "assignedTo": { "type": "string" },
+          "completed": { "type": "boolean", "default": false },
+          "completedTime": { "type": "string", "format": "date-time" },
+          "remarks": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "deicing",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "required": { "type": "boolean", "default": false },
+        "type": { "type": "string", "enum": ["TYPE_I", "TYPE_II", "TYPE_III", "TYPE_IV"] },
+        "fluidType": { "type": "string" },
+        "dilution": { "type": "string" },
+        "appliedAt": { "type": "string", "format": "date-time" },
+        "holdoverTime": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "crew": { "type": "array", "items": { "type": "string" } },
+        "supervisor": { "type": "string" }
+      }
+    },
+    {
+      "name": "foreignObjectDebris",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "checked": { "type": "boolean", "default": false },
+        "checkedTime": { "type": "string", "format": "date-time" },
+        "fodFound": { "type": "boolean", "default": false },
+        "fodRemoved": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "gseUsed",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "equipment": { "type": "string" },
+          "registration": { "type": "string" },
+          "usedAt": { "type": "string", "format": "date-time" },
+          "returnedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "readyForPushback",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "readyTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "confirmedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "confirmedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "CREATED",
+    "ARRIVAL_TASKS",
+    "TURNAROUND",
+    "DEPARTURE_TASKS",
+    "DEICING",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["RAMP_SUPERVISOR", "TURNAROUND_COORDINATOR"],
+    "assign": ["RAMP_SUPERVISOR", "TURNAROUND_COORDINATOR"],
+    "complete_task": ["RAMP_AGENT", "GROUND_HANDLER"],
+    "confirm": ["RAMP_SUPERVISOR"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "arrivalTasks[*].completed", "rule": "all_complete", "message": "All arrival tasks must be complete" },
+    { "field": "deicing.required", "rule": "if_true_then_holdover", "message": "De-icing requires holdover time monitoring" }
+  ],
+  "uiMetadata": {
+    "layout": "ramp_task_sheet",
+    "sections": [
+      { "id": "header", "label": "Flight & Ramp", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "stand", "taskSheetNumber", "rampAgent"] },
+      { "id": "arrival", "label": "Arrival Tasks", "fields": ["arrivalTasks"] },
+      { "id": "departure", "label": "Departure Tasks", "fields": ["departureTasks"] },
+      { "id": "deicing", "label": "De-icing", "fields": ["deicing"] },
+      { "id": "fod", "label": "FOD Check", "fields": ["foreignObjectDebris"] },
+      { "id": "gse", "label": "Ground Equipment Used", "fields": ["gseUsed"] },
+      { "id": "completion", "label": "Completion", "fields": ["readyForPushback", "readyTime", "confirmedBy", "confirmedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "ramp_task_sheet",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 620, Operator ramp procedures, Airport FOD program",
+  "notes": "Ramp tasks record responsibility and completion times. De-icing data used for winter operations compliance."
+}

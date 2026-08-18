@@ -1,0 +1,217 @@
+{
+  "formCode": "F027",
+  "name": "Cargo Distribution",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Cargo distribution plan and record for aircraft compartments including ULD positions and bulk cargo. Used for W&B calculations.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "cargoDistributionNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "uldDistribution",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "position": { "type": "string", "description": "Aircraft cargo position (e.g., 11L, 12R)" },
+          "uldType": { "type": "string" },
+          "uldId": { "type": "string" },
+          "awbCount": { "type": "integer", "minimum": 0 },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "maxWeightKg": { "type": "number", "minimum": 0 },
+          "destination": { "type": "string", "format": "icao_code" },
+          "dgOnUld": { "type": "boolean", "default": false },
+          "liveAnimals": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "bulkDistribution",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "compartment": { "type": "string" },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "pieces": { "type": "integer", "minimum": 0 },
+          "maxWeightKg": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    {
+      "name": "specialCargo",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "awbNumber": { "type": "string" },
+          "type": { "type": "string", "enum": ["VALUABLES", "PERISHABLE", "HUMAN_REMAINS", "LIVE_ANIMALS", "DANGEROUS_GOODS", "OVERWEIGHT", "OVERSIZE", "TEMPERATURE_SENSITIVE", "OWN_USE", "ACCOMPANIED"] },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "position": { "type": "string" },
+          "handlingInstructions": { "type": "string" },
+          "temperatureRange": { "type": "array", "items": { "type": "number" } }
+        }
+      }
+    },
+    {
+      "name": "dgLoads",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "awbNumber": { "type": "string" },
+          "unNumber": { "type": "string" },
+          "class": { "type": "string" },
+          "packingGroup": { "type": "string" },
+          "quantity": { "type": "number" },
+          "units": { "type": "string" },
+          "position": { "type": "string" },
+          "notocReference": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "totalCargo",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "totalPieces": { "type": "integer", "minimum": 0 },
+        "uldCount": { "type": "integer", "minimum": 0 },
+        "awbCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "sumUldAndBulkWeightKg",
+      "type": "number",
+      "required": false,
+      "minimum": 0,
+      "description": "Computed sum of ULD and bulk cargo weight"
+    },
+    {
+      "name": "loadsheetReference",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "notocReference",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "cargoAgentVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "verifiedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "verifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "DISTRIBUTED",
+    "VERIFIED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "CARGO_AGENT"],
+    "distribute": ["LOAD_CONTROLLER", "CARGO_AGENT", "GROUND_HANDLER"],
+    "verify": ["SENIOR_LOAD_CONTROLLER", "CARGO_SUPERVISOR"],
+    "finalize": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS", "CARGO"]
+  },
+  "validationRules": [
+    { "field": "totalCargo.totalWeightKg", "rule": "equals", "refField": "sumUldAndBulkWeightKg", "message": "Total cargo weight must match distribution sum" },
+    { "field": "uldDistribution[*].weightKg", "rule": "less_than_or_equal", "refField": "uldDistribution[*].maxWeightKg", "message": "ULD max weight exceeded" },
+    { "field": "dgLoads", "rule": "has_matching_notoc", "message": "DG loads require matching NOTOC" }
+  ],
+  "uiMetadata": {
+    "layout": "cargo_distribution",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "cargoDistributionNumber"] },
+      { "id": "uld", "label": "ULD Distribution", "fields": ["uldDistribution"] },
+      { "id": "bulk", "label": "Bulk Distribution", "fields": ["bulkDistribution"] },
+      { "id": "special", "label": "Special Cargo", "fields": ["specialCargo"] },
+      { "id": "dg", "label": "Dangerous Goods", "fields": ["dgLoads"] },
+      { "id": "total", "label": "Total Cargo", "fields": ["totalCargo"] },
+      { "id": "references", "label": "References", "fields": ["loadsheetReference", "notocReference"] },
+      { "id": "authorization", "label": "Verification", "fields": ["preparedBy", "preparedTime", "cargoAgentVerified", "verifiedBy", "verifiedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "cargo_distribution",
+    "pageSize": "A4",
+    "orientation": "landscape"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 514, AHM 515, Operator cargo loading procedures",
+  "notes": "Cargo distribution must match loadsheet. DG positions per NOTOC and loading restrictions."
+}

@@ -1,0 +1,237 @@
+{
+  "formCode": "F046",
+  "name": "Catering Order",
+  "version": "1.0",
+  "category": "catering",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Catering order for flight provisioning. Specifies meal requirements, quantities, special meals, uplift confirmation, and accounting.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "cateringOrderNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "cateringProvider",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "providerName": { "type": "string" },
+        "contractReference": { "type": "string" }
+      }
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "cateringServiceTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "passengerCount",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "first": { "type": "integer", "minimum": 0 },
+        "business": { "type": "integer", "minimum": 0 },
+        "economy": { "type": "integer", "minimum": 0 },
+        "premiumEconomy": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Expected passenger counts per class"
+    },
+    {
+      "name": "mealBreakdown",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "serviceType": { "type": "string", "enum": ["DEPARTURE_MEAL", "SNACK", "DRINK_SERVICE", "LAYOVER_MEAL", "SUPPLY", "SHORT_HAUL"] },
+          "class": { "type": "string", "enum": ["F", "C", "Y", "W", "J"] },
+          "mealType": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 0 },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "specialMeals",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "mealCode": { "type": "string", "enum": ["VGML", "VLML", "AVML", "DBML", "GFML", "HNML", "KSML", "LSML", "MOML", "NFML", "SFML", "CPML", "BLML", "FPML", "LPML", "RVML", "FPML", "ORML", "PRML"] },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "seatNumbers": { "type": "array", "items": { "type": "string" } },
+          "confirmed": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "beverageLoad",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "softDrinks": { "type": "integer", "minimum": 0 },
+        "juices": { "type": "integer", "minimum": 0 },
+        "waterBottles": { "type": "integer", "minimum": 0 },
+        "coffeeTea": { "type": "integer", "minimum": 0 },
+        "spiritUnits": { "type": "integer", "minimum": 0 },
+        "beerUnits": { "type": "integer", "minimum": 0 },
+        "wineBottles": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "cabinSupplies",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 0 },
+          "loadable": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "deletedItems",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" },
+      "description": "Items removed from catering for this flight"
+    },
+    {
+      "name": "upliftConfirmed",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "upliftConfirmedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "upliftConfirmedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "anyMissingItems",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "charges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "total": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "SUBMITTED",
+    "CONFIRMED",
+    "UPLIFTED",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["CATERING_COORDINATOR", "CATMAN", "STATION_AGENT"],
+    "submit": ["CATERING_COORDINATOR"],
+    "confirm": ["CATERING_PROVIDER", "CATERING_COORDINATOR"],
+    "verify_uplift": ["PURSER", "CATERING_COORDINATOR"],
+    "view": ["CREW", "CATERING", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "passengerCount.total", "rule": "equals_booked", "message": "Passenger counts must match booking" },
+    { "field": "specialMeals[*].confirmed", "rule": "must_be_true", "message": "Special meals must be confirmed before flight" }
+  ],
+  "uiMetadata": {
+    "layout": "catering_order",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "cateringOrderNumber"] },
+      { "id": "provider", "label": "Provider & Service Time", "fields": ["cateringProvider", "scheduledDeparture", "cateringServiceTime"] },
+      { "id": "pax", "label": "Passenger Counts", "fields": ["passengerCount"] },
+      { "id": "meals", "label": "Meal Breakdown", "fields": ["mealBreakdown"] },
+      { "id": "special", "label": "Special Meals", "fields": ["specialMeals"] },
+      { "id": "beverages", "label": "Beverage Load", "fields": ["beverageLoad"] },
+      { "id": "supplies", "label": "Cabin Supplies", "fields": ["cabinSupplies"] },
+      { "id": "shortages", "label": "Deleted/Missing Items", "fields": ["deletedItems", "anyMissingItems"] },
+      { "id": "uplift", "label": "Uplift Confirmation", "fields": ["upliftConfirmed", "upliftConfirmedTime", "upliftConfirmedBy"] },
+      { "id": "charges", "label": "Charges", "fields": ["charges"] },
+      { "id": "authorization", "label": "Prepared By", "fields": ["preparedBy", "preparedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "catering_order",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": false,
+  "sourceReference": "Operator catering standards, Ground Handling Agreement, IATA AHM Cooking Guidelines",
+  "notes": "Special meals require advance notice (typically 24h). Catering charges per fixed mark-up or actual uplift per agreement."
+}

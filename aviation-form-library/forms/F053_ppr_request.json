@@ -1,0 +1,203 @@
+{
+  "formCode": "F053",
+  "name": "PPR Request",
+  "version": "1.0",
+  "category": "airport",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Prior Permission Required (PPR) request for airports requiring advance approval. For operations, non-scheduled flights, or special services at restricted airports.",
+  "fields": [
+    {
+      "name": "pprNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operator",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftCategory",
+      "type": "string",
+      "required": false,
+      "enum": ["LIGHT", "MILITARY", "HEAVY", "OTHER"]
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "alternateAirport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code"
+    },
+    {
+      "name": "scheduledArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "registrationMark",
+      "type": "string",
+      "required": true,
+      "description": "Aircraft registration mark"
+    },
+    {
+      "name": "aircraftEquipmentCode",
+      "type": "string",
+      "required": false,
+      "description": "PBN capability code"
+    },
+    {
+      "name": "numberOfPersons",
+      "type": "integer",
+      "required": true,
+      "minimum": 1,
+      "description": "Total persons on board"
+    },
+    {
+      "name": "maxTakeoffWeight",
+      "type": "number",
+      "required": true,
+      "description": "Maximum takeoff weight (kg)"
+    },
+    {
+      "name": "purposeOfFlight",
+      "type": "string",
+      "required": true,
+      "enum": ["SCHEDULED", "NON_SCHEDULED", "CHARTER", "PRIVATE", "AIRCRAFT_DELIVERY", "MAINTENANCE", "OVERFLIGHT", "MEDICAL", "EVACUATION", "VIP", "HUMANITARIAN", "OTHER"]
+    },
+    {
+      "name": "operationType",
+      "type": "string",
+      "required": false,
+      "enum": ["ARRIVAL_ONLY", "DEPARTURE_ONLY", "ROUND_TRIP", "TECHNICAL_STOP", "TURNAROUND"]
+    },
+    {
+      "name": "servicesRequired",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string", "enum": ["JETWAY", "FUEL", "CATERING", "DEICING", "MRO", "FBO", "GROUND_HANDLING", "SECURITY"] }
+    },
+    {
+      "name": "specialDesignation",
+      "type": "string",
+      "required": false,
+      "description": "Special flight designation if applicable"
+    },
+    {
+      "name": "specialDesignationDescription",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "contactDetails",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "company": { "type": "string" },
+        "contactPerson": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      }
+    },
+    {
+      "name": "requestedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "requestedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["REQUESTED", "PENDING", "APPROVED", "REJECTED", "CONDITIONAL"],
+      "default": "REQUESTED"
+    },
+    {
+      "name": "approval",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "approved": { "type": "boolean", "default": false },
+        "approvalNumber": { "type": "string" },
+        "conditions": { "type": "array", "items": { "type": "string" } },
+        "validFrom": { "type": "string", "format": "date-time" },
+        "validUntil": { "type": "string", "format": "date-time" },
+        "approvedBy": { "type": "string" },
+        "approvedTime": { "type": "string", "format": "date-time" }
+      }
+    }
+  ],
+  "workflow": [
+    "REQUESTED",
+    "PENDING",
+    "APPROVED",
+    "CONDITIONAL",
+    "REJECTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["FLIGHT_OPS", "STATION_AGENT", "OPERATIONS_COORDINATOR"],
+    "approve": ["AIRPORT_AUTHORITY", "PPR_APPROVER"],
+    "view": ["FLIGHT_OPS", "CREW", "DISPATCHER", "STATION"]
+  },
+  "validationRules": [
+    { "field": "scheduledDeparture", "rule": "after", "refField": "scheduledArrival", "message": "Departure must be after arrival" }
+  ],
+  "uiMetadata": {
+    "layout": "ppr_request",
+    "sections": [
+      { "id": "header", "label": "PPR Request", "fields": ["pprNumber", "operator", "flightNumber", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "alternateAirport"] },
+      { "id": "schedule", "label": "Schedule", "fields": ["scheduledArrival", "scheduledDeparture"] },
+      { "id": "details", "label": "Flight Details", "fields": ["registrationMark", "aircraftEquipmentCode", "numberOfPersons", "maxTakeoffWeight", "purposeOfFlight", "operationType", "specialDesignation"] },
+      { "id": "services", "label": "Services Required", "fields": ["servicesRequired"] },
+      { "id": "contact", "label": "Contact", "fields": ["contactDetails"] },
+      { "id": "approval", "label": "Approval Status", "fields": ["status", "approval", "requestedBy", "requestedAt"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "ppr_request",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "Airport AIP requirements, CNS farming schedules, State civil aviation regulations",
+  "notes": "PPR requirements differ by airport. Certain military/national airports require PPR via specific channels."}

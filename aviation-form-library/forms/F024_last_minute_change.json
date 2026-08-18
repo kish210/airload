@@ -1,0 +1,225 @@
+{
+  "formCode": "F024",
+  "name": "Last Minute Change",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Last Minute Change (LMC) record for changes to load after loadsheet issue. Tracked per IATA AHM 515. Any LMC requiring weight/CG change must produce a revised loadsheet.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "lmcNumber",
+      "type": "string",
+      "required": true,
+      "description": "Unique LMC sequence number"
+    },
+    {
+      "name": "version",
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    {
+      "name": "lmcType",
+      "type": "string",
+      "required": true,
+      "enum": ["PASSENGER_ADD", "PASSENGER_REMOVE", "SEAT_CHANGE", "BAGGAGE_ADD", "BAGGAGE_REMOVE", "CARGO_ADD", "CARGO_REMOVE", "CARGO_REPOSITION", "FUEL_CHANGE", "CREW_CHANGE", "OTHER"]
+    },
+    {
+      "name": "changeTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true,
+      "description": "Time of change (before STD)"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "affectedArea",
+      "type": "string",
+      "required": false,
+      "enum": ["LOADSHEET", "TRIM_SHEET", "LIR", "NOTOC", "MANIFEST", "FUEL", "W&B", "PASSENGER_SERVICE"]
+    },
+    {
+      "name": "passengerChanges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "added": { "type": "integer", "minimum": 0 },
+        "removed": { "type": "integer", "minimum": 0 },
+        "netChange": { "type": "integer" },
+        "weightChangeKg": { "type": "number" },
+        "indexChange": { "type": "number" },
+        "seatAssignments": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "baggageChanges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "addedPieces": { "type": "integer", "minimum": 0 },
+        "removedPieces": { "type": "integer", "minimum": 0 },
+        "weightChangeKg": { "type": "number" }
+      }
+    },
+    {
+      "name": "cargoChanges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "uldAdditions": { "type": "array", "items": { "type": "object", "properties": { "uldId": { "type": "string" }, "weightKg": { "type": "number" }, "position": { "type": "string" } } } },
+        "uldRemovals": { "type": "array", "items": { "type": "object", "properties": { "uldId": { "type": "string" }, "weightKg": { "type": "number" }, "position": { "type": "string" } } } },
+        "weightChangeKg": { "type": "number" },
+        "indexChange": { "type": "number" }
+      }
+    },
+    {
+      "name": "fuelChanges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "fuelChangeKg": { "type": "number" },
+        "reason": { "type": "string" },
+        "authorizedBy": { "type": "string" }
+      }
+    },
+    {
+      "name": "totalWeightChangeKg",
+      "type": "number",
+      "required": true,
+      "description": "Net weight change to aircraft"
+    },
+    {
+      "name": "totalIndexChange",
+      "type": "number",
+      "required": true,
+      "description": "Net CG index change"
+    },
+    {
+      "name": "requiresNewLoadsheet",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "newLoadsheetReference",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "originalLoadsheetReference",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "captainInformed",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "captainInformedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "groundHandlerNotified",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "authorizedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "authorizedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "INITIATED",
+    "EVALUATED",
+    "AUTHORIZED",
+    "CAPTAIN_INFORMED",
+    "LOADSHEET_UPDATED",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "GROUND_HANDLER", "GATE_AGENT", "FUEL_SUPPLIER"],
+    "evaluate": ["LOAD_CONTROLLER"],
+    "authorize": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "captain_inform": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "changeTime", "rule": "before_STD", "message": "LMC must be after loadsheet issue and before STD" },
+    { "field": "requiresNewLoadsheet", "rule": "if_standard_LMC", "message": "Weight-affecting LMC requires new loadsheet" },
+    { "field": "captainInformed", "rule": "must_be_true_before_departure", "message": "Captain must be informed of any LMC" }
+  ],
+  "uiMetadata": {
+    "layout": "last_minute_change",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate", "lmcNumber", "version"] },
+      { "id": "change", "label": "Change Details", "fields": ["lmcType", "changeTime", "description", "affectedArea"] },
+      { "id": "passengers", "label": "Passenger Changes", "fields": ["passengerChanges"] },
+      { "id": "baggage", "label": "Baggage Changes", "fields": ["baggageChanges"] },
+      { "id": "cargo", "label": "Cargo Changes", "fields": ["cargoChanges"] },
+      { "id": "fuel", "label": "Fuel Changes", "fields": ["fuelChanges"] },
+      { "id": "impact", "label": "Weight & CG Impact", "fields": ["totalWeightChangeKg", "totalIndexChange"] },
+      { "id": "loadsheet", "label": "Loadsheet Update", "fields": ["requiresNewLoadsheet", "newLoadsheetReference", "originalLoadsheetReference"] },
+      { "id": "notifications", "label": "Notifications", "fields": ["captainInformed", "captainInformedTime", "groundHandlerNotified"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["authorizedBy", "authorizedAt"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "last_minute_change",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 515, Operator LMC procedures",
+  "notes": "LMC after loadsheet time requires new loadsheet. LMC after LIR/trim requires coordinated updates. All LMCs require Captain notification per operator policy."
+}

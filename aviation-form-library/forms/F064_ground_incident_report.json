@@ -1,0 +1,242 @@
+{
+  "formCode": "F064",
+  "name": "Ground Incident Report",
+  "version": "1.0",
+  "category": "safety",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Ground incident report for incidents during ground operations. Covers GSE collisions, personal injury, equipment damage, and near misses.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "incidentDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "incidentTime",
+      "type": "string",
+      "format": "time",
+      "required": true
+    },
+    {
+      "name": "airport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "location",
+      "type": "string",
+      "required": true,
+      "description": "Stand, apron, taxiway, gate, etc."
+    },
+    {
+      "name": "incidentType",
+      "type": "string",
+      "required": true,
+      "enum": ["GSE_COLLISION", "PERSONAL_INJURY", "EQUIPMENT_DAMAGE", "AIRCRAFT_DAMAGE", "NEAR_MISS", "FUEL_SPILL", "FIRE", "FOD", "DEICING_INCIDENT", "LOST_OR_DAMAGED_ITEM", "SECURITY", "ENVIRONMENTAL", "OTHER"]
+    },
+    {
+      "name": "severity",
+      "type": "string",
+      "required": true,
+      "enum": ["MINOR", "MAJOR", "CRITICAL"]
+    },
+    {
+      "name": "aircraftInvolved",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "flightNumber": { "type": "string" },
+        "aircraftRegistration": { "type": "string" },
+        "aircraftType": { "type": "string" },
+        "damaged": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "equipmentInvolved",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "equipmentType": { "type": "string" },
+          "registration": { "type": "string" },
+          "owner": { "type": "string" },
+          "damaged": { "type": "boolean", "default": false },
+          "damageDescription": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "injuryDetails",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "personsInjured": { "type": "integer", "minimum": 0 },
+        "injuredPerson": { "type": "array", "items": { "type": "object", "properties": { "name": { "type": "string" }, "company": { "type": "string" }, "injury": { "type": "string" }, "medicalTreatment": { "type": "boolean", "default": false }, "hospitalized": { "type": "boolean", "default": false } } } }
+      }
+    },
+    {
+      "name": "incidentDescription",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "sequenceOfEvents",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "causalFactors",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "damage",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "aircraftDamage": { "type": "string" },
+        "equipmentDamage": { "type": "string" },
+        "infrastructureDamage": { "type": "string" },
+        "estimatedCost": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "spills",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "substance": { "type": "string", "enum": ["FUEL", "OIL", "WATER", "CHEMICAL", "OTHER"] },
+          "quantity": { "type": "number" },
+          "units": { "type": "string" },
+          "contained": { "type": "boolean", "default": false },
+          "reportedToAuthority": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "notification",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "companyOpsNotified": { "type": "boolean", "default": false },
+        "safetyNotified": { "type": "boolean", "default": false },
+        "groundHandlerNotified": { "type": "boolean", "default": false },
+        "airportAuthorityNotified": { "type": "boolean", "default": false },
+        "insuranceNotified": { "type": "boolean", "default": false },
+        "medicalNotified": { "type": "boolean", "default": false },
+        "policeNotified": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "witnesses",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "company": { "type": "string" },
+          "contact": { "type": "string" },
+          "statement": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "reportedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportedTo",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "correctiveActions",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "responsible": { "type": "string" },
+          "dueDate": { "type": "string", "format": "date" },
+          "completed": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "investigator",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["OPEN", "INVESTIGATING", "CORRECTIVE_ACTIONS", "CLOSED"],
+      "default": "OPEN"
+    }
+  ],
+  "workflow": [
+    "REPORTED",
+    "NOTIFICATION",
+    "INVESTIGATION",
+    "CORRECTIVE_ACTIONS",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["ANY_PERSONNEL", "GROUND_HANDLER", "RAMP_AGENT"],
+    "notify": ["SAFETY", "STATION_MANAGER", "RAMP_SUPERVISOR"],
+    "investigate": ["SAFETY", "STATION_MANAGER"],
+    "close": ["SAFETY", "STATION_MANAGER"],
+    "view": ["SAFETY", "MANAGEMENT", "GROUND_HANDLING", "INSURANCE"]
+  },
+  "validationRules": [
+    { "field": "incidentType", "rule": "required_notification", "message": "Incident type determines mandatory notifications" }
+  ],
+  "uiMetadata": {
+    "layout": "ground_incident_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["reportNumber", "incidentDate", "incidentTime", "airport", "location"] },
+      { "id": "type", "label": "Incident Type & Severity", "fields": ["incidentType", "severity"] },
+      { "id": "aircraft", "label": "Aircraft Involved", "fields": ["aircraftInvolved"] },
+      { "id": "equipment", "label": "Equipment Involved", "fields": ["equipmentInvolved"] },
+      { "id": "injury", "label": "Injuries", "fields": ["injuryDetails"] },
+      { "id": "description", "label": "Description", "fields": ["incidentDescription", "sequenceOfEvents", "causalFactors"] },
+      { "id": "damage", "label": "Damage", "fields": ["damage"] },
+      { "id": "spills", "label": "Spills", "fields": ["spills"] },
+      { "id": "notifications", "label": "Notifications", "fields": ["notification"] },
+      { "id": "witnesses", "label": "Witnesses", "fields": ["witnesses"] },
+      { "id": "reporting", "label": "Reporting", "fields": ["reportedBy", "reportedTo", "reportedTime"] },
+      { "id": "followup", "label": "Corrective Actions", "fields": ["correctiveActions", "investigator", "status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "ground_incident_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "Operator SMS, IATA Ground Operations Manual, Airport safety programs",
+  "notes": "Immediate actions per emergency and notification matrix. Investigation per just culture. Report spills to appropriate authority."
+}

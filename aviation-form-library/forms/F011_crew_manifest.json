@@ -1,0 +1,182 @@
+{
+  "formCode": "F011",
+  "name": "Crew Manifest",
+  "version": "1.0",
+  "category": "crew",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Crew manifest for flight operations and border authorities. Contains crew member details, qualifications, and duty information.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "flightCrew",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "crewId": { "type": "string" },
+          "givenName": { "type": "string", "minLength": 1 },
+          "familyName": { "type": "string", "minLength": 1 },
+          "position": { "type": "string", "enum": ["CAPTAIN", "FIRST_OFFICER", "SECOND_OFFICER", "FLIGHT_ENGINEER", "NAVIGATOR"] },
+          "licenseNumber": { "type": "string" },
+          "licenseState": { "type": "string", "minLength": 2, "maxLength": 2 },
+          "licenseExpiry": { "type": "string", "format": "date" },
+          "medicalExpiry": { "type": "string", "format": "date" },
+          "typeRatings": { "type": "array", "items": { "type": "string" } },
+          "nationality": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "documentType": { "type": "string", "enum": ["P", "ID", "C"] },
+          "documentNumber": { "type": "string" },
+          "documentExpiry": { "type": "string", "format": "date" },
+          "dutyStartTime": { "type": "string", "format": "date-time" },
+          "dutyEndTime": { "type": "string", "format": "date-time" },
+          "restPeriod": { "type": "number", "description": "Pre-duty rest in hours" }
+        },
+        "required": ["crewId", "givenName", "familyName", "position", "licenseNumber", "licenseState", "licenseExpiry", "medicalExpiry"]
+      }
+    },
+    {
+      "name": "cabinCrew",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "crewId": { "type": "string" },
+          "givenName": { "type": "string", "minLength": 1 },
+          "familyName": { "type": "string", "minLength": 1 },
+          "position": { "type": "string", "enum": ["PURSER", "SENIOR_CABIN_CREW", "CABIN_CREW"] },
+          "licenseNumber": { "type": "string" },
+          "licenseExpiry": { "type": "string", "format": "date" },
+          "medicalExpiry": { "type": "string", "format": "date" },
+          "qualifications": { "type": "array", "items": { "type": "string" } },
+          "nationality": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "documentType": { "type": "string", "enum": ["P", "ID", "C"] },
+          "documentNumber": { "type": "string" },
+          "documentExpiry": { "type": "string", "format": "date" },
+          "dutyStartTime": { "type": "string", "format": "date-time" },
+          "dutyEndTime": { "type": "string", "format": "date-time" },
+          "restPeriod": { "type": "number" },
+          "languages": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["crewId", "givenName", "familyName", "position", "licenseNumber", "licenseExpiry", "medicalExpiry"]
+      }
+    },
+    {
+      "name": "totalFlightCrew",
+      "type": "integer",
+      "required": true,
+      "minimum": 1
+    },
+    {
+      "name": "totalCabinCrew",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "minimumCabinCrewRequired",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "captainVerified",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "GENERATED",
+    "VERIFIED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["CREW_SCHEDULING", "FLIGHT_OPS"],
+    "modify": ["CREW_SCHEDULING", "FLIGHT_OPS"],
+    "verify": ["CAPTAIN", "FLIGHT_OPS"],
+    "view": ["CREW", "DISPATCHER", "AUTHORITIES", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "flightCrew", "rule": "unique_crew_id", "message": "Crew IDs must be unique" },
+    { "field": "flightCrew[*].licenseExpiry", "rule": "after", "refField": "operationalDate", "message": "License must not be expired" },
+    { "field": "flightCrew[*].medicalExpiry", "rule": "after", "refField": "operationalDate", "message": "Medical must not be expired" },
+    { "field": "totalCabinCrew", "rule": "greater_than_or_equal", "refField": "minimumCabinCrewRequired", "message": "Cabin crew below minimum required" }
+  ],
+  "uiMetadata": {
+    "layout": "crew_manifest",
+    "sections": [
+      { "id": "header", "label": "Flight Information", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate", "scheduledDeparture"] },
+      { "id": "summary", "label": "Crew Summary", "fields": ["totalFlightCrew", "totalCabinCrew", "minimumCabinCrewRequired"] },
+      { "id": "flightCrew", "label": "Flight Crew", "fields": ["flightCrew"] },
+      { "id": "cabinCrew", "label": "Cabin Crew", "fields": ["cabinCrew"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["preparedBy", "preparedTime", "captainVerified", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "crew_manifest",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 1, Annex 6, EASA FCL, FAA 121.383",
+  "notes": "Crew qualifications and currency must be verified. Duty times per FTL regulations."
+}

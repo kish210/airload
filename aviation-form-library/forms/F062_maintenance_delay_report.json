@@ -1,0 +1,220 @@
+{
+  "formCode": "F062",
+  "name": "Maintenance Delay Report",
+  "version": "1.0",
+  "category": "maintenance",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Maintenance delay report for aircraft delays caused by maintenance issues. Tracks delay cause, rectification, and impact on operations.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "delayDuration",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalDelayMinutes": { "type": "integer", "minimum": 0 },
+        "engineeringDelayMinutes": { "type": "integer", "minimum": 0 },
+        "attributableToMaintenance": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "iataDelayCode",
+      "type": "string",
+      "required": true,
+      "enum": ["112", "113", "114", "115", "116", "117", "118", "121", "122", "123", "124", "125", "126", "127", "129", "130", "131", "132", "133", "134", "135", "136", "OTHER"],
+      "description": "IATA delay code for engineering/maintenance"
+    },
+    {
+      "name": "delayCategory",
+      "type": "string",
+      "required": true,
+      "enum": ["AIRCRAFT_SYSTEM", "COMPONENT", "ENGINE", "AVIONICS", "STRUCTURAL", "IFEC", "CABIN", "MEL_ISSUE", "TECH_LOG", "TOOLING", "PERSONNEL", "OTHER"]
+    },
+    {
+      "name": "defectDescription",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "systemAffected",
+      "type": "string",
+      "required": false,
+      "description": "ATA chapter/system affected"
+    },
+    {
+      "name": "maintenanceAction",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "partsUsed",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "partNumber": { "type": "string" },
+          "serialNumber": { "type": "string" },
+          "description": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "availability": { "type": "string", "enum": ["STOCK", "ORDERED", "AOG", "BORROWED"] }
+        }
+      }
+    },
+    {
+      "name": "groundTimeEvaluation",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "estGroundTime": { "type": "integer", "minimum": 0 },
+        "otherFactorsAffecting": { "type": "string" }
+      }
+    },
+    {
+      "name": "technicalLogEntry",
+      "type": "string",
+      "required": false,
+      "description": "Reference to technical log entry"
+    },
+    {
+      "name": "mannedBy",
+      "type": "string",
+      "required": true,
+      "description": "Maintenance personnel who handled"
+    },
+    {
+      "name": "engineeringSupervisor",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reportedToOps",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "reportedToOpsTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "followUpRequired",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "followUpAction",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reportedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "REPORTED",
+    "RESOLVED_AT_STATION",
+    "FOLLOWUP_PENDING",
+    "FOLLOWUP_COMPLETE",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["ENGINEER", "STATION_ENGINEERING", "MAINTENANCE_CONTROL"],
+    "resolve": ["ENGINEER", "STATION_ENGINEERING"],
+    "followup": ["MAINTENANCE_CONTROL", "ENGINEERING"],
+    "close": ["MAINTENANCE_MANAGER"],
+    "view": ["FLIGHT_OPS", "ENGINEERING", "MAINTENANCE", "MANAGEMENT", "RELIABILITY"]
+  },
+  "validationRules": [
+    { "field": "actualDeparture", "rule": "after_or_equal", "refField": "scheduledDeparture", "message": "Departure cannot be before scheduled" },
+    { "field": "delayDuration.attributableToMaintenance", "rule": "code_matches", "message": "IATA code must match engineering category" }
+  ],
+  "uiMetadata": {
+    "layout": "maintenance_delay_report",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["reportNumber", "flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate"] },
+      { "id": "delay", "label": "Delay Details", "fields": ["scheduledDeparture", "actualDeparture", "delayDuration", "iataDelayCode", "delayCategory"] },
+      { "id": "defect", "label": "Defect & Rectification", "fields": ["defectDescription", "systemAffected", "maintenanceAction", "partsUsed"] },
+      { "id": "evaluation", "label": "Ground Time Evaluation", "fields": ["groundTimeEvaluation"] },
+      { "id": "logging", "label": "Logging", "fields": ["technicalLogEntry"] },
+      { "id": "reporting", "label": "Reporting", "fields": ["mannedBy", "engineeringSupervisor", "reportedToOps", "reportedToOpsTime"] },
+      { "id": "followup", "label": "Follow-up", "fields": ["followUpRequired", "followUpAction"] },
+      { "id": "authorization", "label": "Reported By", "fields": ["reportedBy", "reportedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "maintenance_delay_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Delay Coding, Operator M&E procedures, Reliability programs",
+  "notes": "Delay codes per IATA AHDM. Attribution assessed by engineering and operations jointly. Enter in reliability system."
+}

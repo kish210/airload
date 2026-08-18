@@ -1,0 +1,180 @@
+{
+  "formCode": "F051",
+  "name": "Customs Declaration",
+  "version": "1.0",
+  "category": "border",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Customs declaration for crew and aircraft stores per JCAB CAR. Declares crew goods, stores, and items requiring customs clearance.",
+  "fields": [
+    {
+      "name": "declarationNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "declarationType",
+      "type": "string",
+      "required": true,
+      "enum": ["CREW", "STORES", "CREW_AND_STORES", "NEW_GOODS", "OTHER"]
+    },
+    {
+      "name": "crewGoods",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "crewMember": { "type": "string" },
+          "itemDescription": { "type": "string" },
+          "quantity": { "type": "integer", "minimum": 1 },
+          "value": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "dutyFree": { "type": "boolean", "default": false }
+        }
+      },
+      "description": "Goods brought in by individual crew members"
+    },
+    {
+      "name": "aircraftStores",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string" },
+          "quantity": { "type": "number" },
+          "unit": { "type": "string" },
+          "value": { "type": "number", "minimum": 0 },
+          "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "consumedOnBoard": { "type": "boolean", "default": false },
+          "transferredToAnotherAircraft": { "type": "boolean", "default": false },
+          "landed": { "type": "boolean", "default": false }
+        }
+      },
+      "description": "Aircraft stores that have been consumed or landed"
+    },
+    {
+      "name": "dutyOnStores",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "dutyPayable": { "type": "boolean", "default": false },
+        "dutyPaid": { "type": "boolean", "default": false },
+        "amount": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "destinationOfGoods",
+      "type": "string",
+      "required": false,
+      "enum": ["SALES_SHOP", "EXPORT", "TRANSIT", "CONSUMED", "RESTAURANT", "AMUSEMENT_FACILITY", "OTHER"]
+    },
+    {
+      "name": "declarationDetails",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "declarationDate": { "type": "string", "format": "date" },
+        "declarationPlace": { "type": "string" },
+        "declarantName": { "type": "string" },
+        "declarantTitle": { "type": "string" },
+        "signature": { "type": "string", "format": "base64" },
+        "authorizationNumber": { "type": "string" }
+      }
+    },
+    {
+      "name": "customsOfficer",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "name": { "type": "string" },
+        "badgeNumber": { "type": "string" },
+        "cleared": { "type": "boolean", "default": false },
+        "clearedTime": { "type": "string", "format": "date-time" },
+        "remarks": { "type": "string" }
+      }
+    },
+    {
+      "name": "remarks",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "SUBMITTED",
+    "REVIEWING",
+    "CLEARED",
+    "REJECTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["PURSER", "FLIGHT_OPS", "STATION_AGENT"],
+    "submit": ["PURSER", "STATION_AGENT"],
+    "clear": ["CUSTOMS_OFFICER"],
+    "view": ["AUTHORITIES", "FLIGHT_OPS", "GROUND_HANDLING", "STATION_MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "aircraftStores[*].landed", "rule": "duty_applicable", "message": "Landed stores require duty declaration" }
+  ],
+  "uiMetadata": {
+    "layout": "customs_declaration",
+    "sections": [
+      { "id": "header", "label": "Declaration Identification", "fields": ["declarationNumber", "flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "declarationType"] },
+      { "id": "crewGoods", "label": "Crew Goods", "fields": ["crewGoods"] },
+      { "id": "stores", "label": "Aircraft Stores", "fields": ["aircraftStores", "dutyOnStores"] },
+      { "id": "destination", "label": "Destination of Goods", "fields": ["destinationOfGoods"] },
+      { "id": "declaration", "label": "Declaration", "fields": ["declarationDetails"] },
+      { "id": "customs", "label": "Customs Clearance", "fields": ["customsOfficer"] },
+      { "id": "remarks", "label": "Remarks", "fields": ["remarks"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "customs_declaration",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 9, State customs regulations, WCO standards",
+  "notes": "Customs declaration formats and requirements vary significantly by State. Verify current State requirements before use."
+}

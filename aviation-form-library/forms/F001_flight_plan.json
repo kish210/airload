@@ -1,0 +1,187 @@
+{
+  "formCode": "F001",
+  "name": "Flight Plan",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "ICAO Flight Plan (FPL) for ATC submission. Based on ICAO Doc 4444 PANS-ATM Appendix 2.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true,
+      "description": "Operator flight identifier"
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true,
+      "description": "ICAO airline designator"
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code",
+      "description": "Departure aerodrome ICAO code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code",
+      "description": "Destination aerodrome ICAO code"
+    },
+    {
+      "name": "alternateAirport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code",
+      "description": "Alternate aerodrome ICAO code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": false,
+      "description": "Aircraft registration"
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true,
+      "description": "ICAO aircraft type designator"
+    },
+    {
+      "name": "wakeTurbulenceCategory",
+      "type": "string",
+      "required": true,
+      "enum": ["L", "M", "H", "J"],
+      "description": "Wake turbulence category"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true,
+      "description": "Date of flight"
+    },
+    {
+      "name": "departureTime",
+      "type": "string",
+      "format": "time",
+      "required": true,
+      "description": "Estimated off-block time (UTC)"
+    },
+    {
+      "name": "cruisingSpeed",
+      "type": "string",
+      "required": true,
+      "description": "True airspeed (e.g., N0450, M082, K0830)"
+    },
+    {
+      "name": "cruisingLevel",
+      "type": "string",
+      "required": true,
+      "description": "Initial cruising level (e.g., F350, SFL150, A045)"
+    },
+    {
+      "name": "route",
+      "type": "string",
+      "required": true,
+      "description": "Route description per ICAO format"
+    },
+    {
+      "name": "fuelEndurance",
+      "type": "string",
+      "required": true,
+      "format": "hhmm",
+      "description": "Fuel endurance in hours and minutes"
+    },
+    {
+      "name": "personsOnBoard",
+      "type": "integer",
+      "required": true,
+      "minimum": 1,
+      "description": "Total persons on board"
+    },
+    {
+      "name": "emergencyEquipment",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "polar": { "type": "boolean" },
+        "desert": { "type": "boolean" },
+        "maritime": { "type": "boolean" },
+        "jungle": { "type": "boolean" },
+        "jackets": { "type": "boolean" },
+        "dinghies": { "type": "boolean" }
+      }
+    },
+    {
+      "name": "remarks",
+      "type": "string",
+      "required": false,
+      "description": "Additional remarks (RMK/)"
+    },
+    {
+      "name": "pilotInCommand",
+      "type": "string",
+      "required": true,
+      "description": "Pilot-in-command name"
+    },
+    {
+      "name": "filingTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false,
+      "description": "Time of filing"
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "FILED",
+    "ACKNOWLEDGED",
+    "ACTIVE",
+    "COMPLETED",
+    "CANCELLED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "FLIGHT_OPS"],
+    "file": ["DISPATCHER", "FLIGHT_OPS"],
+    "modify": ["DISPATCHER", "FLIGHT_OPS"],
+    "cancel": ["DISPATCHER", "FLIGHT_OPS", "PIC"],
+    "view": ["ALL"]
+  },
+  "validationRules": [
+    { "field": "departureTime", "rule": "future_or_now", "message": "Departure time must be current or future" },
+    { "field": "fuelEndurance", "rule": "format_hhmm", "message": "Fuel endurance must be HHMM format" },
+    { "field": "route", "rule": "not_empty", "message": "Route is required" }
+  ],
+  "uiMetadata": {
+    "layout": "icao_fpl",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftType", "wakeTurbulenceCategory"] },
+      { "id": "route", "label": "Route", "fields": ["departureAirport", "arrivalAirport", "alternateAirport", "departureTime", "cruisingSpeed", "cruisingLevel", "route"] },
+      { "id": "fuel", "label": "Fuel & Endurance", "fields": ["fuelEndurance", "personsOnBoard"] },
+      { "id": "equipment", "label": "Emergency Equipment", "fields": ["emergencyEquipment"] },
+      { "id": "remarks", "label": "Remarks", "fields": ["remarks", "pilotInCommand"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "icao_flight_plan",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "fieldsMapping": {
+      "flightNumber": "Item 7",
+      "aircraftType": "Item 9",
+      "departureAirport": "Item 13",
+      "arrivalAirport": "Item 16",
+      "route": "Item 15"
+    }
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Doc 4444 PANS-ATM Appendix 2",
+  "notes": "Verify against current ICAO SARPs and State AIP before operational use."
+}

@@ -1,0 +1,230 @@
+{
+  "formCode": "F045",
+  "name": "Fuel Order",
+  "version": "1.0",
+  "category": "fuel",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Fuel order and delivery record for aircraft refueling. Captures requested quantities, actual uplift, fuel grade, and quality checks.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "fuelOrderNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "supplier",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "supplierName": { "type": "string" },
+        "contractReference": { "type": "string" },
+        "fuelPointContact": { "type": "string" }
+      }
+    },
+    {
+      "name": "fuelGrade",
+      "type": "string",
+      "required": true,
+      "enum": ["JET_A", "JET_A1", "AVGAS_LL_100", "JET_B", "JET_A1_ADDITIVE", "OTHER"]
+    },
+    {
+      "name": "requestedFuel",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "requestedUpliftKg": { "type": "number", "minimum": 0 },
+        "requestedUpliftLitres": { "type": "number", "minimum": 0 },
+        "requestName": { "type": "string", "description": "Who requested fuel" },
+        "purpose": { "type": "string", "enum": ["TRIP", "CONTINGENCY", "ALTERNATE", "TAXI", "TANKER", "REPLENISHMENT", "ALL"] },
+        "requestedTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "actualUplift",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "density": { "type": "number", "description": "kg/litre at observed temperature" },
+        "temperature": { "type": "number", "description": "Fuel temperature" },
+        "upliftLitres": { "type": "number", "minimum": 0 },
+        "upliftKg": { "type": "number", "minimum": 0 },
+        "supplierProvidedQty": { "type": "boolean", "default": false },
+        "measuredBy": { "type": "string" }
+      }
+    },
+    {
+      "name": "fuelOnAircraftBefore",
+      "type": "number",
+      "required": false,
+      "description": "Fuel on board before uplift (kg)"
+    },
+    {
+      "name": "fuelOnAircraftAfter",
+      "type": "number",
+      "required": false,
+      "description": "Fuel on board after uplift (kg)"
+    },
+    {
+      "name": "discrepancy",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "requestedVsActualDifferenceKg": { "type": "number" },
+        "toleranceExceeded": { "type": "boolean", "default": false },
+        "reason": { "type": "string" }
+      }
+    },
+    {
+      "name": "qualityChecks",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "gradeCorrect": { "type": "boolean", "default": false },
+        "visuallyClearBright": { "type": "boolean", "default": false },
+        "noWaterOrSediment": { "type": "boolean", "default": false },
+        "fuelDensityConfirmed": { "type": "boolean", "default": false },
+        "additivesCorrect": { "type": "boolean", "default": false },
+        "checksCompletedBy": { "type": "string" }
+      }
+    },
+    {
+      "name": "fuelQualityCheckDate",
+      "type": "string",
+      "format": "date",
+      "required": false
+    },
+    {
+      "name": "fuelSupplierCertifiedRef",
+      "type": "string",
+      "required": false,
+      "description": "Reference to supplier fuel quality certificate"
+    },
+    {
+      "name": "deliveryMethod",
+      "type": "string",
+      "required": true,
+      "enum": ["TRUCK", "HYDRANT", "DEFUEL"]
+    },
+    {
+      "name": "truckNumber",
+      "type": "string",
+      "required": false,
+      "description": "Hydrant dispenser/truck ID"
+    },
+    {
+      "name": "refuelingStarted",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "refuelingCompleted",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "refuelingOperator",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "refuelingSupervisor",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "aircraftFuelApprovalRef",
+      "type": "string",
+      "required": false,
+      "description": "Reference to aircraft fuel order approval from loadsheet/dispatch"
+    },
+    {
+      "name": "notes",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "REQUESTED",
+    "SCHEDULED",
+    "REFUELING",
+    "COMPLETED",
+    "QUALITY_VERIFIED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "FUEL_COORDINATOR", "STATION_AGENT", "CREW"],
+    "order": ["DISPATCHER", "FUEL_COORDINATOR"],
+    "perform": ["FUEL_SUPPLIER", "REFUELER"],
+    "verify": ["FUEL_COORDINATOR", "RAMP_SUPERVISOR"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS", "FINANCE", "FUEL_PURCHASING"]
+  },
+  "validationRules": [
+    { "field": "fuelGrade", "rule": "aircraft_compatible", "message": "Fuel grade must be compatible with aircraft type" },
+    { "field": "qualityChecks.visuallyClearBright", "rule": "must_be_true", "message": "Fuel must pass visual quality check" },
+    { "field": "actualUplift.upliftKg", "rule": "matches_fuel_order", "message": "Uplift must be reconciled with fuel order" }
+  ],
+  "uiMetadata": {
+    "layout": "fuel_order",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "fuelOrderNumber"] },
+      { "id": "supplier", "label": "Supplier", "fields": ["supplier", "fuelGrade"] },
+      { "id": "request", "label": "Fuel Request", "fields": ["requestedFuel"] },
+      { "id": "uplift", "label": "Actual Uplift", "fields": ["actualUplift", "fuelOnAircraftBefore", "fuelOnAircraftAfter", "discrepancy"] },
+      { "id": "quality", "label": "Quality Checks", "fields": ["qualityChecks", "fuelQualityCheckDate", "fuelSupplierCertifiedRef"] },
+      { "id": "delivery", "label": "Delivery", "fields": ["deliveryMethod", "truckNumber", "refuelingStarted", "refuelingCompleted", "refuelingOperator", "refuelingSupervisor"] },
+      { "id": "approval", "label": "Approval", "fields": ["aircraftFuelApprovalRef"] },
+      { "id": "notes", "label": "Notes", "fields": ["notes"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "fuel_order",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "copies": 2,
+    "distribution": ["Fuel Supplier", "Airline Records"]
+  },
+  "auditRequired": true,
+  "sourceReference": "JIG Standards (ASTM/ISO), IATA AHM 620, Operator fuel procedures",
+  "notes": "Fuel quality checks mandatory prior to uplift. Density measurement critical for kg conversion. Fuel order per dispatch fuel plan."
+}

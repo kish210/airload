@@ -1,0 +1,171 @@
+{
+  "formCode": "F004",
+  "name": "Dispatch Briefing",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Pre-departure dispatch briefing package for flight crew. Consolidates weather, NOTAMs, performance, and operational information.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "alternateAirport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "briefingTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "weatherPackage",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "departureMetar": { "type": "string" },
+        "departureTaf": { "type": "string" },
+        "arrivalMetar": { "type": "string" },
+        "arrivalTaf": { "type": "string" },
+        "alternateMetar": { "type": "string" },
+        "alternateTaf": { "type": "string" },
+        "enrouteWeather": { "type": "array", "items": { "type": "string" } },
+        "significantWeatherCharts": { "type": "array", "items": { "type": "string" } },
+        "volcanicAshAdvisory": { "type": "string" },
+        "tropicalCycloneAdvisory": { "type": "string" }
+      }
+    },
+    {
+      "name": "notamPackage",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "departureNotams": { "type": "array", "items": { "type": "string" } },
+        "arrivalNotams": { "type": "array", "items": { "type": "string" } },
+        "alternateNotams": { "type": "array", "items": { "type": "string" } },
+        "enrouteNotams": { "type": "array", "items": { "type": "string" } },
+        "firNotams": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "performanceSummary",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "takeoffWeight": { "type": "number" },
+        "landingWeight": { "type": "number" },
+        "zeroFuelWeight": { "type": "number" },
+        "takeoffFuel": { "type": "number" },
+        "tripFuel": { "type": "number" },
+        "runwayAnalysis": { "type": "string" },
+        "takeoffPerformance": { "type": "object" },
+        "landingPerformance": { "type": "object" }
+      }
+    },
+    {
+      "name": "fuelPlan",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "tripFuel": { "type": "number" },
+        "contingencyFuel": { "type": "number" },
+        "alternateFuel": { "type": "number" },
+        "finalReserveFuel": { "type": "number" },
+        "extraFuel": { "type": "number" },
+        "taxiFuel": { "type": "number" },
+        "totalFuel": { "type": "number" },
+        "fuelSupplier": { "type": "string" },
+        "fuelGrade": { "type": "string" }
+      }
+    },
+    {
+      "name": "operationalNotes",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "crewBriefingAcknowledged",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "PREPARED",
+    "BRIEFED",
+    "ACKNOWLEDGED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "FLIGHT_OPS"],
+    "prepare": ["DISPATCHER"],
+    "brief": ["DISPATCHER", "FLIGHT_OPS"],
+    "acknowledge": ["CREW"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "briefingTime", "rule": "before_departure", "message": "Briefing must be completed before departure" }
+  ],
+  "uiMetadata": {
+    "layout": "dispatch_briefing",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "operationalDate", "briefingTime", "preparedBy"] },
+      { "id": "airports", "label": "Airports", "fields": ["departureAirport", "arrivalAirport", "alternateAirport"] },
+      { "id": "weather", "label": "Weather Package", "fields": ["weatherPackage"] },
+      { "id": "notams", "label": "NOTAM Package", "fields": ["notamPackage"] },
+      { "id": "performance", "label": "Performance Summary", "fields": ["performanceSummary"] },
+      { "id": "fuel", "label": "Fuel Plan", "fields": ["fuelPlan"] },
+      { "id": "notes", "label": "Operational Notes", "fields": ["operationalNotes", "crewBriefingAcknowledged"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "dispatch_briefing_package",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6, Operator dispatch briefing standards",
+  "notes": "Briefing must be current at time of departure. Updates require re-briefing."
+}

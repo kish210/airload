@@ -1,0 +1,253 @@
+{
+  "formCode": "F050",
+  "name": "General Declaration",
+  "version": "1.0",
+  "category": "border",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "General Declaration (GENDEC) for Customs and immigration authorities. Based on ICAO Annex 9 and FAO standard forms.",
+  "fields": [
+    {
+      "name": "declarationNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "flightRoute",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "fromAirport": { "type": "string", "format": "icao_code" },
+          "toAirport": { "type": "string", "format": "icao_code" },
+          "arrivalDate": { "type": "string", "format": "date" },
+          "arrivalTimeLocal": { "type": "string", "format": "time" }
+        }
+      },
+      "description": "Scheduled flight route"
+    },
+    {
+      "name": "flightCompliance",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "lastDepartureState": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "arrivalState": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "flightType": { "type": "string", "enum": ["SCHEDULED", "NON_SCHEDULED", "GENERAL_AVIATION", "MILITARY"] },
+        "flightPurpose": { "type": "string", "enum": ["PASSENGER", "CARGO", "MAIL", "HUMANITARIAN", "OTHER"] },
+        "cargoCompliance": { "type": "string", "enum": ["BASE_CARGO", "SECURE", "EXEMPT"] }
+      }
+    },
+    {
+      "name": "aircraftData",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "flightIdentification": { "type": "string" },
+        "aircraftTailNumber": { "type": "string" },
+        "aircraftOperator": { "type": "string" },
+        "aircraftOwner": { "type": "string" },
+        "registration": { "type": "string" },
+        "malfunctions": { "type": "string" }
+      }
+    },
+    {
+      "name": "personnelOnBoard",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "crewOnBoard": { "type": "integer", "minimum": 0 },
+        "passengersOnBoard": { "type": "integer", "minimum": 0 },
+        "totalOnBoard": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "personelOnArrival",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "crewOnArrival": { "type": "integer", "minimum": 0 },
+        "passengersOnArrival": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "transitPassengers",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "inTransit": { "type": "integer", "minimum": 0 },
+        "continuing": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "apiSubmission",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "apiSubmissionTime": { "type": "string", "format": "date-time" },
+        "apiBatchNumber": { "type": "string" },
+        "apiScannedManifest": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "cargoDetails",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "numberOfWaybills": { "type": "integer", "minimum": 0 },
+        "totalPieces": { "type": "integer", "minimum": 0 },
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "cargoManifestProvided": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "aircraftUtilization",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "cargoUplifted": { "type": "number", "minimum": 0 },
+        "cargoDischarged": { "type": "number", "minimum": 0 },
+        "mailUplifted": { "type": "number", "minimum": 0 },
+        "mailDischarged": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "fuelImported",
+      "type": "number",
+      "required": false,
+      "minimum": 0,
+      "description": "Fuel imported/uplifted at this airport (kg)"
+    },
+    {
+      "name": "storesImported",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": { "type": "string" },
+          "quantity": { "type": "number" },
+          "unit": { "type": "string" },
+          "forUseOnBoard": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    {
+      "name": "remedialMeasures",
+      "type": "string",
+      "required": false,
+      "description": "Remedial measures applied for sanitation/medical conditions"
+    },
+    {
+      "name": "healthDeclaration",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "suspectedCasesOnBoard": { "type": "integer", "minimum": 0 },
+        "healthDeclarationRequired": { "type": "boolean", "default": false },
+        "vectorOnBoard": { "type": "boolean", "default": false },
+        "exemptedCargo": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "commander",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "name": { "type": "string" },
+        "signature": { "type": "string", "format": "base64" },
+        "time": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "issuedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "issuedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "SUBMITTED",
+    "ACKNOWLEDGED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "FLIGHT_OPS", "STATION_AGENT"],
+    "complete": ["DISPATCHER", "PIC"],
+    "submit": ["STATION_AGENT", "GROUND_HANDLER", "COMMANDER"],
+    "view": ["AUTHORITIES", "FLIGHT_OPS", "GROUND_HANDLING"]
+  },
+  "validationRules": [
+    { "field": "personnelOnBoard.totalOnBoard", "rule": "matches_parts", "message": "Total on board must match crew and passengers" }
+  ],
+  "uiMetadata": {
+    "layout": "general_declaration",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["declarationNumber", "flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate"] },
+      { "id": "route", "label": "Flight Route", "fields": ["flightRoute", "flightCompliance"] },
+      { "id": "aircraft", "label": "Aircraft Data", "fields": ["aircraftData"] },
+      { "id": "personnel", "label": "Personnel on Board", "fields": ["personnelOnBoard", "personelOnArrival", "transitPassengers"] },
+      { "id": "api", "label": "API Submission", "fields": ["apiSubmission"] },
+      { "id": "cargo", "label": "Cargo Details", "fields": ["cargoDetails", "aircraftUtilization"] },
+      { "id": "stores", "label": "Fuel & Stores", "fields": ["fuelImported", "storesImported"] },
+      { "id": "health", "label": "Health Declaration", "fields": ["remedialMeasures", "healthDeclaration"] },
+      { "id": "authorization", "label": "Commander & Issuance", "fields": ["commander", "issuedBy", "issuedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "general_declaration",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "copies": 3,
+    "distribution": ["Customs", "Immigration", "Health"]
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 9, ICAO FAL, FAO standard GENDEC forms",
+  "notes": "General Declaration format may be specified by each State. Confirm current State requirements before use."
+}

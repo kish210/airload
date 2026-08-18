@@ -1,0 +1,216 @@
+{
+  "formCode": "F044",
+  "name": "Ground Damage Report",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Ground damage report for aircraft or equipment damage during ground operations. Used for incident investigation, insurance, and corrective action.",
+  "fields": [
+    {
+      "name": "damageReportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": false,
+      "description": "Flight involved (if any)"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "damageTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "airport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "location",
+      "type": "string",
+      "required": true,
+      "description": "Precise location (stand, apron, taxiway, etc.)"
+    },
+    {
+      "name": "damagedItem",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "type": { "type": "string", "enum": ["AIRCRAFT", "GSE", "BUILDING", "FIXTURE", "GROUND_VEHICLE", "OTHER"] },
+        "aircraftRegistration": { "type": "string" },
+        "aircraftType": { "type": "string" },
+        "equipmentType": { "type": "string" },
+        "equipmentRegistration": { "type": "string" },
+        "owner": { "type": "string" },
+        "value": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "damageDescription",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "area": { "type": "string", "description": "Damaged area/location on item" },
+          "description": { "type": "string" },
+          "severity": { "type": "string", "enum": ["SUPERFICIAL", "MINOR", "MAJOR", "CRITICAL"] },
+          "photos": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    {
+      "name": "cause",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "equipmentInvolved": { "type": "string" },
+        "personnelInvolved": { "type": "array", "items": { "type": "string" } },
+        "sequence": { "type": "string" },
+        "contributingFactors": { "type": "string" },
+        "avoidable": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "witnesses",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "company": { "type": "string" },
+          "contact": { "type": "string" },
+          "statement": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "damageOccurrenceContext",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "occurrenceRelatedToFlight": { "type": "boolean", "default": false },
+        "flightNumber": { "type": "string" },
+        "pushback": { "type": "boolean", "default": false },
+        "deicing": { "type": "boolean", "default": false },
+        "catering": { "type": "boolean", "default": false },
+        "fueling": { "type": "boolean", "default": false },
+        "baggageLoading": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "aircraftAirworthinessImpact",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "flightDisrupted": { "type": "boolean", "default": false },
+        "aircraftGrounded": { "type": "boolean", "default": false },
+        "maintenanceRequired": { "type": "boolean", "default": false },
+        "maintNumberOfDays": { "type": "integer", "minimum": 0 },
+        "technicalLogEntry": { "type": "string" }
+      }
+    },
+    {
+      "name": "notifications",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "companyOps": { "type": "boolean", "default": false },
+        "safety": { "type": "boolean", "default": false },
+        "insurance": { "type": "boolean", "default": false },
+        "groundHandler": { "type": "boolean", "default": false },
+        "airportAuthority": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "correctiveActions",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "responsible": { "type": "string" },
+          "dueDate": { "type": "string", "format": "date" },
+          "completed": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "reportedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "investigator",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "investigationStatus",
+      "type": "string",
+      "required": false,
+      "enum": ["OPEN", "UNDER_INVESTIGATION", "COMPLETED", "CLOSED"]
+    }
+  ],
+  "workflow": [
+    "REPORTED",
+    "INVESTIGATING",
+    "CORRECTIVE_ACTIONS",
+    "RESOLVED",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["RAMP_AGENT", "GROUND_HANDLER", "STATION_AGENT", "RAMP_SUPERVISOR"],
+    "investigate": ["SAFETY", "STATION_MANAGER", "MAINTENANCE"],
+    "resolve": ["SAFETY", "STATION_MANAGER"],
+    "close": ["SAFETY", "STATION_MANAGER"],
+    "view": ["SAFETY", "MANAGEMENT", "INSURANCE", "GROUND_HANDLING", "MAINTENANCE"]
+  },
+  "validationRules": [
+    { "field": "location", "rule": "not_empty", "message": "Location required" },
+    { "field": "damageDescription", "rule": "not_empty", "message": "Damage description required" }
+  ],
+  "uiMetadata": {
+    "layout": "ground_damage_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["damageReportNumber", "flightNumber", "operationalDate", "damageTime", "airport", "location"] },
+      { "id": "item", "label": "Damaged Item", "fields": ["damagedItem"] },
+      { "id": "description", "label": "Damage Description", "fields": ["damageDescription"] },
+      { "id": "cause", "label": "Cause", "fields": ["cause"] },
+      { "id": "context", "label": "Occurrence Context", "fields": ["damageOccurrenceContext"] },
+      { "id": "impact", "label": "Airworthiness Impact", "fields": ["aircraftAirworthinessImpact"] },
+      { "id": "witnesses", "label": "Witnesses", "fields": ["witnesses"] },
+      { "id": "notifications", "label": "Notifications", "fields": ["notifications"] },
+      { "id": "corrective", "label": "Corrective Actions", "fields": ["correctiveActions"] },
+      { "id": "reporting", "label": "Reporting", "fields": ["reportedBy", "reportedTime", "investigator", "investigationStatus"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "ground_damage_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "Operator SMS, Ground Handling Agreement, Manufacturer SRM/MM",
+  "notes": "Report immediately after damage detection. Determine airworthiness impact via engineering. Both company and handler investigation under IATA SGHA."
+}

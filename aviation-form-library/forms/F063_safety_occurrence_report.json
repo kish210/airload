@@ -1,0 +1,207 @@
+{
+  "formCode": "F063",
+  "name": "Safety/Occurrence Report",
+  "version": "1.0",
+  "category": "safety",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Safety and occurrence report per operator SMS. Confidential reporting of safety incidents, hazards, and occurrence classification. Based on ICAO Annex 19 and Annex 13 reporting principles.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportType",
+      "type": "string",
+      "required": true,
+      "enum": ["HAZARD_REPORT", "OCCURRENCE_REPORT", "SAFETY_REPORT", "CONFIDENTIAL_REPORT", "EMPTY_REPORT"]
+    },
+    {
+      "name": "occurrenceDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "occurrenceTime",
+      "type": "string",
+      "format": "time",
+      "required": true
+    },
+    {
+      "name": "airport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code"
+    },
+    {
+      "name": "flightContext",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "flightPhase": { "type": "string", "enum": ["PARKED", "PUSHBACK", "TAXI", "TAKEOFF", "CLIMB", "CRUISE", "DESCENT", "APPROACH", "LANDING", "ROLLOUT", "UNKNOWN"] },
+        "flightNumber": { "type": "string" },
+        "aircraftRegistration": { "type": "string" },
+        "aircraftType": { "type": "string" },
+        "departureAirport": { "type": "string", "format": "icao_code" },
+        "arrivalAirport": { "type": "string", "format": "icao_code" }
+      }
+    },
+    {
+      "name": "occurrenceType",
+      "type": "string",
+      "required": true,
+      "enum": ["ACCIDENT", "SERIOUS_INCIDENT", "INCIDENT", "GROUND_INCIDENT", "HAZARD", "NEAR_MISS", "RUNWAY_INCURSION", "TAXIWAY_INCURSION", "BIRD_STRIKE", "FOD", "GSE_DAMAGE", "PERSONAL_INJURY", "SYSTEM_FAILURE", "OTHER"]
+    },
+    {
+      "name": "severity",
+      "type": "string",
+      "required": true,
+      "enum": ["NEGLIGIBLE", "MINOR", "MAJOR", "HAZARDOUS", "CATASTROPHIC"]
+    },
+    {
+      "name": "eventDescription",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "sequenceOfEvents",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "causalFactors",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "humanFactors": { "type": "string" },
+        "organizationalFactors": { "type": "string" },
+        "technicalFactors": { "type": "string" },
+        "environmentalFactors": { "type": "string" }
+      }
+    },
+    {
+      "name": "immediateActionTaken",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "recommendedCorrectiveAction",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reportedAs",
+      "type": "string",
+      "required": true,
+      "enum": ["NAMED", "CONFIDENTIAL", "ANONYMOUS"]
+    },
+    {
+      "name": "reporter",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "company": { "type": "string" },
+        "contact": { "type": "string" }
+      }
+    },
+    {
+      "name": "mandatoryReporting",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "isMandatoryReportable": { "type": "boolean", "default": false },
+        "reportingBasis": { "type": "string" },
+        "notifiedAuthority": { "type": "boolean", "default": false },
+        "authorityReference": { "type": "string" },
+        "notificationTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "stateAuthorityNotified",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "investigationStatus",
+      "type": "string",
+      "required": true,
+      "enum": ["OPEN", "UNDER_INVESTIGATION", "COMPLETED", "CLOSED"],
+      "default": "OPEN"
+    },
+    {
+      "name": "investigationReference",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "confidentiality",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "confidentialReport": { "type": "boolean", "default": false },
+        "accessRestricted": { "type": "boolean", "default": false },
+        "dataProtection": { "type": "boolean", "default": false },
+        "legalProtection": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "submittedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "submittedTo",
+      "type": "string",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "RECEIVED",
+    "SCREENING",
+    "INVESTIGATION",
+    "CORRECTIVE_ACTIONS",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["ALL_EMPLOYEES", "ANY_PERSONNEL"],
+    "screen": ["SAFETY", "SMS_MANAGER"],
+    "investigate": ["SAFETY", "INVESTIGATOR"],
+    "close": ["SAFETY_MANAGER"],
+    "view": ["SAFETY", "INVESTIGATION", "MANAGEMENT", "CAA (limited)"]
+  },
+  "validationRules": [
+    { "field": "mandatoryReporting.isMandatoryReportable", "rule": "notify_authority", "message": "Mandatory reportable occurrence must be notified to authority" },
+    { "field": "eventDescription", "rule": "not_empty", "message": "Event description required" }
+  ],
+  "uiMetadata": {
+    "layout": "safety_occurrence_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["reportNumber", "reportType", "occurrenceDate", "occurrenceTime", "airport"] },
+      { "id": "context", "label": "Flight Context", "fields": ["flightContext"] },
+      { "id": "occurrence", "label": "Occurrence", "fields": ["occurrenceType", "severity", "eventDescription", "sequenceOfEvents"] },
+      { "id": "causes", "label": "Causal Factors", "fields": ["causalFactors"] },
+      { "id": "actions", "label": "Actions", "fields": ["immediateActionTaken", "recommendedCorrectiveAction"] },
+      { "id": "reporter", "label": "Reporter", "fields": ["reportedAs", "reporter"] },
+      { "id": "regulatory", "label": "Regulatory Reporting", "fields": ["mandatoryReporting", "stateAuthorityNotified"] },
+      { "id": "investigation", "label": "Investigation", "fields": ["investigationStatus", "investigationReference"] },
+      { "id": "confidentiality", "label": "Confidentiality", "fields": ["confidentiality"] },
+      { "id": "submission", "label": "Submission", "fields": ["submittedAt", "submittedTo"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "safety_occurrence_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 19, ICAO Annex 13, EASA Regulation 376/2014, Operator SMS manual",
+  "notes": "Confidentiality per safety data protection laws. Just culture principles apply. Mandatory reporting timelines per State requirements."
+}

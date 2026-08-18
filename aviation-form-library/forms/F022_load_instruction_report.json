@@ -1,0 +1,231 @@
+{
+  "formCode": "F022",
+  "name": "Load Instruction Report",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Load Instruction Report (LIR) providing detailed loading instructions to ground handling staff. Based on IATA AHM 514.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "loadInstructionNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "version",
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    {
+      "name": "supersedes",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "loadingSequence",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": { "type": "integer" },
+          "compartment": { "type": "string" },
+          "uldType": { "type": "string" },
+          "uldId": { "type": "string" },
+          "content": { "type": "string" },
+          "weightKg": { "type": "number" },
+          "position": { "type": "string" },
+          "restraint": { "type": "string" },
+          "specialHandling": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    {
+      "name": "bulkLoading",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "forwardHold": {
+          "type": "object",
+          "properties": {
+            "baggageWeightKg": { "type": "number" },
+            "cargoWeightKg": { "type": "number" },
+            "mailWeightKg": { "type": "number" },
+            "loadingOrder": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "aftHold": {
+          "type": "object",
+          "properties": {
+            "baggageWeightKg": { "type": "number" },
+            "cargoWeightKg": { "type": "number" },
+            "mailWeightKg": { "type": "number" },
+            "loadingOrder": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "bulkHold": {
+          "type": "object",
+          "properties": {
+            "baggageWeightKg": { "type": "number" },
+            "cargoWeightKg": { "type": "number" },
+            "mailWeightKg": { "type": "number" },
+            "loadingOrder": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    {
+      "name": "specialLoads",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string" },
+          "weightKg": { "type": "number" },
+          "dimensions": { "type": "string" },
+          "compartment": { "type": "string" },
+          "position": { "type": "string" },
+          "restraintMethod": { "type": "string" },
+          "dgClass": { "type": "string" },
+          "dgUnNumber": { "type": "string" },
+          "handlingInstructions": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "ballast",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "compartment": { "type": "string" },
+          "weightKg": { "type": "number" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "loadingRemarks",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "loadControlOfficer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "lcoTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "receivedByGroundHandler",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "receivedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "ISSUED",
+    "RECEIVED",
+    "LOADING_IN_PROGRESS",
+    "LOADING_COMPLETE",
+    "SUPERSEDED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "LOAD_CONTROL_SYSTEM"],
+    "issue": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "receive": ["GROUND_HANDLER", "RAMP_SUPERVISOR"],
+    "supersede": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "loadingSequence", "rule": "not_empty", "message": "At least one loading step required" },
+    { "field": "loadingSequence[*].weightKg", "rule": "positive", "message": "Weight must be positive" }
+  ],
+  "uiMetadata": {
+    "layout": "load_instruction_report",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "loadInstructionNumber", "version", "supersedes"] },
+      { "id": "sequence", "label": "Loading Sequence (ULDs)", "fields": ["loadingSequence"] },
+      { "id": "bulk", "label": "Bulk Loading Instructions", "fields": ["bulkLoading"] },
+      { "id": "special", "label": "Special Loads", "fields": ["specialLoads"] },
+      { "id": "ballast", "label": "Ballast", "fields": ["ballast"] },
+      { "id": "remarks", "label": "Remarks", "fields": ["loadingRemarks"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["preparedBy", "preparedTime", "loadControlOfficer", "lcoTime"] },
+      { "id": "receipt", "label": "Ground Handler Receipt", "fields": ["receivedByGroundHandler", "receivedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "load_instruction_report",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "copies": 2,
+    "distribution": ["Ground Handler", "Load Control"]
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 514, AHM 515, Operator loading procedures",
+  "notes": "LIR must be issued before loading commences. Changes require new version. Ground handler receipt confirms receipt of instructions."
+}

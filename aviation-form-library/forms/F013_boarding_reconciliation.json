@@ -1,0 +1,265 @@
+{
+  "formCode": "F013",
+  "name": "Boarding Reconciliation",
+  "version": "1.0",
+  "category": "boarding",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Boarding gate reconciliation comparing boarded passengers against checked-in manifest. Final headcount for load control and authorities.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "gate",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "boardingStartTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "boardingEndTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "doorCloseTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "totalCheckedIn",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "totalBoarded",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "totalNoShow",
+      "type": "integer",
+      "required": true,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalGoShow",
+      "type": "integer",
+      "required": true,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalOffloaded",
+      "type": "integer",
+      "required": true,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalInfants",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "boardedPassengers",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequenceNumber": { "type": "integer" },
+          "givenName": { "type": "string" },
+          "familyName": { "type": "string" },
+          "seat": { "type": "string" },
+          "boardingTime": { "type": "string", "format": "date-time" },
+          "boardingAgent": { "type": "string" },
+          "documentReverified": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "noShowPassengers",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequenceNumber": { "type": "integer" },
+          "givenName": { "type": "string" },
+          "familyName": { "type": "string" },
+          "reason": { "type": "string" },
+          "baggageOffloaded": { "type": "boolean", "default": false },
+          "baggageTagNumbers": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    {
+      "name": "goShowPassengers",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "givenName": { "type": "string" },
+          "familyName": { "type": "string" },
+          "seat": { "type": "string" },
+          "originalFlight": { "type": "string" },
+          "boardingTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "offloadedPassengers",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequenceNumber": { "type": "integer" },
+          "givenName": { "type": "string" },
+          "familyName": { "type": "string" },
+          "reason": { "type": "string", "enum": ["VOLUNTARY", "INVOLUNTARY", "SECURITY", "MEDICAL", "BEHAVIOR", "DOCUMENT", "WEIGHT_BALANCE"] },
+          "compensation": { "type": "string" },
+          "baggageOffloaded": { "type": "boolean", "default": false },
+          "baggageTagNumbers": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    {
+      "name": "discrepancies",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string", "enum": ["EXTRA_PASSENGER", "MISSING_PASSENGER", "SEAT_MISMATCH", "DOCUMENT_ISSUE", "BAGGAGE_MISMATCH"] },
+          "description": { "type": "string" },
+          "resolved": { "type": "boolean", "default": false },
+          "resolution": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "headcountVerifiedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "headcountVerifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "loadControlNotified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "loadControlNotifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "captainNotified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "captainNotifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "BOARDING_STARTED",
+    "BOARDING_COMPLETE",
+    "RECONCILED",
+    "VERIFIED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["GATE_AGENT", "BOARDING_SYSTEM"],
+    "board_passenger": ["GATE_AGENT"],
+    "reconcile": ["GATE_AGENT", "SENIOR_GATE_AGENT", "DUTY_MANAGER"],
+    "verify": ["SENIOR_GATE_AGENT", "DUTY_MANAGER"],
+    "finalize": ["DUTY_MANAGER", "FLIGHT_OPS"],
+    "view": ["CREW", "DISPATCHER", "LOAD_CONTROL", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "totalBoarded", "rule": "equals", "refField": "boardedPassengers.length", "message": "Boarded count must match boarded passenger list" },
+    { "field": "totalCheckedIn", "rule": "greater_than_or_equal", "refField": "totalBoarded", "message": "Boarded cannot exceed checked in" },
+    { "field": "doorCloseTime", "rule": "after", "refField": "boardingEndTime", "message": "Door close must be after boarding end" }
+  ],
+  "uiMetadata": {
+    "layout": "boarding_reconciliation",
+    "sections": [
+      { "id": "header", "label": "Flight Information", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate", "gate"] },
+      { "id": "times", "label": "Boarding Times", "fields": ["boardingStartTime", "boardingEndTime", "doorCloseTime"] },
+      { "id": "summary", "label": "Headcount Summary", "fields": ["totalCheckedIn", "totalBoarded", "totalNoShow", "totalGoShow", "totalOffloaded", "totalInfants"] },
+      { "id": "boarded", "label": "Boarded Passengers", "fields": ["boardedPassengers"] },
+      { "id": "noShow", "label": "No-Shows", "fields": ["noShowPassengers"] },
+      { "id": "goShow", "label": "Go-Shows", "fields": ["goShowPassengers"] },
+      { "id": "offloaded", "label": "Offloaded", "fields": ["offloadedPassengers"] },
+      { "id": "discrepancies", "label": "Discrepancies", "fields": ["discrepancies"] },
+      { "id": "verification", "label": "Verification", "fields": ["headcountVerifiedBy", "headcountVerifiedTime", "loadControlNotified", "loadControlNotifiedTime", "captainNotified", "captainNotifiedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "boarding_reconciliation",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Resolution 728, ICAO Annex 6, Operator boarding procedures",
+  "notes": "Reconciliation must be completed before door close. Discrepancies require immediate resolution."
+}

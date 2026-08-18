@@ -1,0 +1,226 @@
+{
+  "formCode": "F012",
+  "name": "Check-in Record",
+  "version": "1.0",
+  "category": "checkin",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Individual passenger check-in record capturing baggage, seat assignment, document verification, and special handling.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "passengerId",
+      "type": "string",
+      "required": true,
+      "description": "Reference to passenger in manifest"
+    },
+    {
+      "name": "sequenceNumber",
+      "type": "integer",
+      "required": true
+    },
+    {
+      "name": "givenName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "familyName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "checkInTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "checkInAgent",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "checkInChannel",
+      "type": "string",
+      "required": true,
+      "enum": ["AIRPORT_COUNTER", "KIOSK", "WEB", "MOBILE", "TRANSFER", "GROUP"]
+    },
+    {
+      "name": "seat",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "class",
+      "type": "string",
+      "required": true,
+      "enum": ["F", "C", "Y", "W", "J"]
+    },
+    {
+      "name": "baggage",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "tagNumber": { "type": "string" },
+          "weightKg": { "type": "number", "minimum": 0 },
+          "pieces": { "type": "integer", "minimum": 1, "default": 1 },
+          "type": { "type": "string", "enum": ["CHECKED", "CARRY_ON", "GATE_CHECK", "SPECIAL", "FRAGILE", "OVERSIZE"] },
+          "routing": { "type": "string" },
+          "limitedReleaseTag": { "type": "boolean", "default": false },
+          "excessBaggage": { "type": "boolean", "default": false },
+          "excessFee": { "type": "number", "default": 0 }
+        }
+      }
+    },
+    {
+      "name": "totalBaggageCount",
+      "type": "integer",
+      "required": true,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalBaggageWeightKg",
+      "type": "number",
+      "required": true,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "documentVerified",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "documentVerificationMethod",
+      "type": "string",
+      "required": false,
+      "enum": ["MANUAL", "SCANNER", "BIOMETRIC", "APIS"]
+    },
+    {
+      "name": "visaVerified",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "apiDataSent",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "ssrCodes",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "specialHandling",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "upgrade",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "fromClass": { "type": "string" },
+        "toClass": { "type": "string" },
+        "reason": { "type": "string" },
+        "authorizedBy": { "type": "string" }
+      }
+    },
+    {
+      "name": "boardingPassIssued",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "boardingPassNumber",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["CHECKED_IN", "BOARDED", "NO_SHOW", "GO_SHOW", "OFFLOADED", "DENIED_BOARDING"],
+      "default": "CHECKED_IN"
+    }
+  ],
+  "workflow": [
+    "INITIATED",
+    "DOCUMENTS_VERIFIED",
+    "BAGGAGE_ACCEPTED",
+    "SEAT_ASSIGNED",
+    "BOARDING_PASS_ISSUED",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["CHECKIN_AGENT", "KIOSK_SYSTEM", "WEB_CHECKIN"],
+    "modify": ["CHECKIN_AGENT", "SENIOR_AGENT"],
+    "verify_docs": ["CHECKIN_AGENT", "DOCUMENT_VERIFIER"],
+    "accept_baggage": ["BAGGAGE_AGENT", "CHECKIN_AGENT"],
+    "issue_boarding_pass": ["CHECKIN_AGENT", "KIOSK_SYSTEM", "GATE_AGENT"],
+    "view": ["PASSENGER", "CREW", "DISPATCHER", "AUTHORITIES"]
+  },
+  "validationRules": [
+    { "field": "checkInTime", "rule": "before_departure", "message": "Check-in must be before departure" },
+    { "field": "totalBaggageWeightKg", "rule": "matches_baggage_sum", "message": "Total weight must match sum of individual bags" },
+    { "field": "boardingPassIssued", "rule": "implies_boarding_pass_number", "message": "Boarding pass number required if issued" }
+  ],
+  "uiMetadata": {
+    "layout": "checkin_record",
+    "sections": [
+      { "id": "header", "label": "Flight & Passenger", "fields": ["flightNumber", "airlineCode", "departureAirport", "arrivalAirport", "operationalDate", "passengerId", "sequenceNumber", "givenName", "familyName"] },
+      { "id": "checkin", "label": "Check-in Details", "fields": ["checkInTime", "checkInAgent", "checkInChannel", "seat", "class", "status"] },
+      { "id": "baggage", "label": "Baggage", "fields": ["baggage", "totalBaggageCount", "totalBaggageWeightKg"] },
+      { "id": "documents", "label": "Documents", "fields": ["documentVerified", "documentVerificationMethod", "visaVerified", "apiDataSent"] },
+      { "id": "special", "label": "Special Handling", "fields": ["ssrCodes", "specialHandling", "upgrade"] },
+      { "id": "boarding", "label": "Boarding", "fields": ["boardingPassIssued", "boardingPassNumber"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "checkin_record",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Resolution 728, ICAO Annex 9, Operator DCS procedures",
+  "notes": "Record created at check-in. Updates tracked through boarding. Retain per regulatory requirements."
+}

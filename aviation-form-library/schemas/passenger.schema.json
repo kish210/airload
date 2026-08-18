@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Passenger",
+  "type": "object",
+  "required": [
+    "givenName",
+    "familyName"
+  ],
+  "properties": {
+    "givenName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "familyName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentNumber": {
+      "type": "string"
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date"
+    },
+    "seat": {
+      "type": "string"
+    },
+    "ssrCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

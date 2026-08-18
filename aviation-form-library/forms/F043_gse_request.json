@@ -1,0 +1,187 @@
+{
+  "formCode": "F043",
+  "name": "GSE Request",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Ground Support Equipment (GSE) request and allocation record. Tracks equipment requests, allocation, and return.",
+  "fields": [
+    {
+      "name": "requestNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "stand",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "scheduledArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "requestedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "requestedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "equipmentRequested",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "equipmentType": { "type": "string", "enum": ["GROUND_POWER_UNIT", "AIR_START_UNIT", "AIR_CONDITIONING_UNIT", "TUG", "TOW_BAR", "BAGGAGE_CART", "PALLET_LOADER", "CONTAINER_LOADER", "CONVEYOR_BELT", "FOOD_TRUCK", "LAVATORY_TRUCK", "WATER_TRUCK", "FUEL_TRUCK", "STEPS", "DEICING_TRUCK", "TRANSFER_VEHICLE", "CHOCKS", "HEADSET", "BRAKE_RIDER_SET", "STAIR_TRUCK", "OTHER"] },
+          "quantity": { "type": "integer", "minimum": 1, "default": 1 },
+          "allocatedEquipment": { "type": "string", "description": "Allocated equipment ID" },
+          "status": { "type": "string", "enum": ["REQUESTED", "ALLOCATED", "AT_STAND", "IN_USE", "RETURNED", "UNAVAILABLE"] },
+          "requestedTime": { "type": "string", "format": "date-time" },
+          "allocatedTime": { "type": "string", "format": "date-time" },
+          "atStandTime": { "type": "string", "format": "date-time" },
+          "returnedTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "provider",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "providerName": { "type": "string" },
+        "contractReference": { "type": "string" },
+        "dispatchDesk": { "type": "string" },
+        "contactPhone": { "type": "string" }
+      }
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "required": true,
+      "enum": ["NORMAL", "PRIORITY", "EMERGENCY"],
+      "default": "NORMAL"
+    },
+    {
+      "name": "specialRequirements",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "unavailableEquipment",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "equipmentType": { "type": "string" },
+          "reason": { "type": "string" },
+          "alternativeProposed": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "charges",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "totalAmount": { "type": "number" },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "billingReference": { "type": "string" }
+      }
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["REQUESTED", "ALLOCATED", "PARTIALLY_ALLOCATED", "COMPLETED", "CANCELLED"],
+      "default": "REQUESTED"
+    }
+  ],
+  "workflow": [
+    "REQUESTED",
+    "ALLOCATED",
+    "DELIVERED",
+    "IN_USE",
+    "RETURNED",
+    "COMPLETED",
+    "CANCELLED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["RAMP_SUPERVISOR", "TURNAROUND_COORDINATOR", "STATION_AGENT"],
+    "allocate": ["GROUND_HANDLER", "GSE_DISPATCHER"],
+    "deliver": ["GSE_OPERATOR", "GROUND_HANDLER"],
+    "complete": ["RAMP_SUPERVISOR"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "STATION_MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "equipmentRequested", "rule": "not_empty", "message": "At least one equipment requested" }
+  ],
+  "uiMetadata": {
+    "layout": "gse_request",
+    "sections": [
+      { "id": "header", "label": "Request Information", "fields": ["requestNumber", "flightNumber", "airlineCode", "departureAirport", "aircraftRegistration", "aircraftType", "operationalDate", "stand"] },
+      { "id": "schedule", "label": "Schedule", "fields": ["scheduledArrival", "scheduledDeparture"] },
+      { "id": "equipment", "label": "Equipment Requested", "fields": ["equipmentRequested"] },
+      { "id": "provider", "label": "Provider", "fields": ["provider", "priority", "specialRequirements"] },
+      { "id": "unavailable", "label": "Unavailable Equipment", "fields": ["unavailableEquipment"] },
+      { "id": "charges", "label": "Charges", "fields": ["charges"] },
+      { "id": "status", "label": "Status", "fields": ["status", "requestedBy", "requestedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "gse_request",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": false,
+  "sourceReference": "IATA AHM 620, Ground Handling Agreement, Operator GSE procedures",
+  "notes": "GSE request drives equipment allocation and billing. Confirm ground handling agreement terms for charging."
+}

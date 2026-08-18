@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Flight",
+  "type": "object",
+  "required": [
+    "flightNumber",
+    "departureAirport",
+    "arrivalAirport",
+    "operationalDate"
+  ],
+  "properties": {
+    "flightNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "airlineCode": {
+      "type": "string"
+    },
+    "departureAirport": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4
+    },
+    "arrivalAirport": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4
+    },
+    "aircraftRegistration": {
+      "type": "string"
+    },
+    "operationalDate": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "additionalProperties": false
+}

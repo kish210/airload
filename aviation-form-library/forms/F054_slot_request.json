@@ -1,0 +1,201 @@
+{
+  "formCode": "F054",
+  "name": "Slot Request",
+  "version": "1.0",
+  "category": "airport",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Airport slot request for departure/arrival slots at coordinated airports. Per IATA Worldwide Slot Guidelines (WSG).",
+  "fields": [
+    {
+      "name": "slotRequestNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operatorName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "originAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "destinationAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "airportCoordinator",
+      "type": "string",
+      "required": true,
+      "description": "Coordinated airport requesting slot"
+    },
+    {
+      "name": "season",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "seasonCode": { "type": "string", "enum": ["S", "W"], "description": "Summer (S) or Winter (W)" },
+        "year": { "type": "integer", "minimum": 2000 }
+      }
+    },
+    {
+      "name": "requestType",
+      "type": "string",
+      "required": true,
+      "enum": ["INITIAL", "VARIATION", "CANCELLATION", "TRANSFER"]
+    },
+    {
+      "name": "slotTime",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "requestedTime": { "type": "string", "format": "time" },
+        "dayOfOperation": { "type": "array", "items": { "type": "string", "enum": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"] } },
+        "localOrUTC": { "type": "string", "enum": ["LOCAL", "UTC"] }
+      }
+    },
+    {
+      "name": "operationType",
+      "type": "string",
+      "required": false,
+      "enum": ["DOMESTIC", "INTERNATIONAL", "REGIONAL"]
+    },
+    {
+      "name": "schedule",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "effectiveFrom": { "type": "string", "format": "date" },
+        "effectiveTo": { "type": "string", "format": "date" },
+        "frequency": { "type": "string", "enum": ["DAILY", "WEEKLY", "MULTI_WEEKLY", "ONE_TIME"] },
+        "pattern": { "type": "string", "description": "Day pattern e.g., 1,3,5" }
+      }
+    },
+    {
+      "name": "previousSeasonSlot",
+      "type": "string",
+      "required": false,
+      "description": "Previous season slot reference if applicable"
+    },
+    {
+      "name": "historicalGrandfather",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "required": false,
+      "description": "Requested priority per WSG"
+    },
+    {
+      "name": "submittedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "submittedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["SUBMITTED", "PENDING", "GRANTED", "DENIED", "MODIFIED", "CANCELLED"],
+      "default": "SUBMITTED"
+    },
+    {
+      "name": "slotAllocation",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "allocatedTime": { "type": "string", "format": "time" },
+        "allocatedDate": { "type": "string", "format": "date" },
+        "allocationCode": { "type": "string" },
+        "allocatedBy": { "type": "string" },
+        "allocatedTimeStamp": { "type": "string", "format": "date-time" },
+        "remarks": { "type": "string" }
+      }
+    },
+    {
+      "name": "history",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "time": { "type": "string", "format": "date-time" },
+          "event": { "type": "string" },
+          "user": { "type": "string" },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  ],
+  "workflow": [
+    "SUBMITTED",
+    "PENDING",
+    "GRANTED",
+    "DENIED",
+    "MODIFIED",
+    "CANCELLED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["SLOT_COORDINATOR", "FLIGHT_OPS", "SCHEDULING", "STATION_AGENT"],
+    "submit": ["SLOT_COORDINATOR", "SCHEDULING"],
+    "allocate": ["COORDINATOR", "SLOT_COORDINATOR"],
+    "view": ["FLIGHT_OPS", "SCHEDULING", "STATION"]
+  },
+  "validationRules": [
+    { "field": "slotAllocation", "rule": "present_when_granted", "message": "Slot allocation required when granted" }
+  ],
+  "uiMetadata": {
+    "layout": "slot_request",
+    "sections": [
+      { "id": "header", "label": "Slot Request", "fields": ["slotRequestNumber", "airlineCode", "operatorName", "flightNumber", "aircraftRegistration", "aircraftType", "originAirport", "destinationAirport", "airportCoordinator"] },
+      { "id": "season", "label": "Season & Schedule", "fields": ["season", "schedule", "requestType"] },
+      { "id": "slot", "label": "Slot Time Request", "fields": ["slotTime"] },
+      { "id": "priority", "label": "Priority & History", "fields": ["previousSeasonSlot", "historicalGrandfather", "priority"] },
+      { "id": "allocation", "label": "Slot Allocation", "fields": ["slotAllocation"] },
+      { "id": "status", "label": "Status & History", "fields": ["status", "history", "submittedBy", "submittedAt"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "slot_request",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Worldwide Slot Guidelines (WSG), Airport coordination procedures",
+  "notes": "Slot coordination and submission timelines per WSG and airport coordinator. Verify filing deadlines."
+}

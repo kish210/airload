@@ -1,0 +1,217 @@
+{
+  "formCode": "F072",
+  "name": "Daily Station Report",
+  "version": "1.0",
+  "category": "reporting",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Daily operational report for an airport station. Summarizes flights, passengers, cargo, delays, incidents, and station issues.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "station",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "reportDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "stationManager",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationsDay",
+      "type": "string",
+      "required": true,
+      "enum": ["ARRIVALS", "DEPARTURES", "BOTH"]
+    },
+    {
+      "name": "flights",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "arrivalsScheduled": { "type": "integer", "minimum": 0 },
+        "arrivalsOperated": { "type": "integer", "minimum": 0 },
+        "arrivalsCancelled": { "type": "integer", "minimum": 0 },
+        "arrivalsDiverted": { "type": "integer", "minimum": 0 },
+        "departuresScheduled": { "type": "integer", "minimum": 0 },
+        "departuresOperated": { "type": "integer", "minimum": 0 },
+        "departuresCancelled": { "type": "integer", "minimum": 0 },
+        "onTimeDeparturePct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    {
+      "name": "passengerData",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "arrivedPassengers": { "type": "integer", "minimum": 0 },
+        "departedPassengers": { "type": "integer", "minimum": 0 },
+        "transitPassengers": { "type": "integer", "minimum": 0 },
+        "transfersPassengers": { "type": "integer", "minimum": 0 },
+        "noShows": { "type": "integer", "minimum": 0 },
+        "deniedBoarding": { "type": "integer", "minimum": 0 },
+        "specialAssistanceRequests": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "baggageData",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "bagsDeparted": { "type": "integer", "minimum": 0 },
+        "bagsArrived": { "type": "integer", "minimum": 0 },
+        "mishandled": { "type": "integer", "minimum": 0 },
+        "mishandledPerThousand": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "cargoData",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "cargoLoadedKg": { "type": "number", "minimum": 0 },
+        "cargoUnloadedKg": { "type": "number", "minimum": 0 },
+        "mailLoadedKg": { "type": "number", "minimum": 0 },
+        "mailUnloadedKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "delays",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "averageDepartureDelayMinutes": { "type": "number", "minimum": 0 },
+        "maxDelayMinutes": { "type": "integer", "minimum": 0 },
+        "delayedFlights": { "type": "integer", "minimum": 0 },
+        "topDelayCauses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "iataCode": { "type": "string" },
+              "count": { "type": "integer", "minimum": 0 },
+              "totalMinutes": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "incidents",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "description": { "type": "string" },
+          "reportNumber": { "type": "string" },
+          "resolved": { "type": "boolean", "default": false },
+          "time": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "weather",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "significantWeather": { "type": "boolean", "default": false },
+        "weatherDescription": { "type": "string" },
+        "runwayConditions": { "type": "string" },
+        "deicingPerformed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "staffing",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "staffScheduled": { "type": "integer", "minimum": 0 },
+        "staffAvailable": { "type": "integer", "minimum": 0 },
+        "staffShortage": { "type": "integer", "minimum": 0 },
+        "overtimeHours": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "gseIssues",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "remarks",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["DRAFT", "COMPLETED", "REVIEWED"],
+      "default": "DRAFT"
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "REVIEWED",
+    "DISTRIBUTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["STATION_MANAGER", "STATION_AGENT", "OPERATIONS_COORDINATOR"],
+    "review": ["FLIGHT_OPS_MANAGER", "STATION_MANAGER"],
+    "view": ["MANAGEMENT", "FLIGHT_OPS", "CORPORATE"]
+  },
+  "validationRules": [
+    { "field": "flights.departuresOperated", "rule": "less_than_or_equal", "refField": "flights.departuresScheduled", "message": "Operated cannot exceed scheduled" }
+  ],
+  "uiMetadata": {
+    "layout": "daily_station_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["reportNumber", "station", "reportDate", "stationManager", "operationsDay"] },
+      { "id": "flights", "label": "Flight Operations", "fields": ["flights"] },
+      { "id": "passengers", "label": "Passenger Data", "fields": ["passengerData"] },
+      { "id": "baggage", "label": "Baggage Data", "fields": ["baggageData"] },
+      { "id": "cargo", "label": "Cargo & Mail", "fields": ["cargoData"] },
+      { "id": "delays", "label": "Delays", "fields": ["delays"] },
+      { "id": "incidents", "label": "Incidents", "fields": ["incidents"] },
+      { "id": "weather", "label": "Weather", "fields": ["weather"] },
+      { "id": "staffing", "label": "Staffing", "fields": ["staffing"] },
+      { "id": "gse", "label": "GSE Issues", "fields": ["gseIssues"] },
+      { "id": "remarks", "label": "Remarks", "fields": ["remarks"] },
+      { "id": "authorization", "label": "Preparation", "fields": ["preparedBy", "preparedTime", "status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "daily_station_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "Operator station operations manual, station quality program",
+  "notes": "Daily report supports station performance monitoring and corporate reporting."
+}

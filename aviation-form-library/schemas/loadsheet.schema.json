@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://airload.local/schemas/loadsheet.schema.json",
+  "title": "Loadsheet Data",
+  "description": "Weight and balance data for preliminary and final loadsheets (F020, F021).",
+  "type": "object",
+  "required": [
+    "flightNumber",
+    "airlineCode",
+    "departureAirport",
+    "arrivalAirport",
+    "aircraftRegistration",
+    "aircraftType",
+    "operationalDate"
+  ],
+  "properties": {
+    "flightNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "airlineCode": {
+      "type": "string"
+    },
+    "departureAirport": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4
+    },
+    "arrivalAirport": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4
+    },
+    "aircraftRegistration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aircraftType": {
+      "type": "string"
+    },
+    "operationalDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "scheduledDeparture": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dryOperatingWeight": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string", "enum": ["kg", "lbs"], "default": "kg" }
+      }
+    },
+    "dryOperatingIndex": {
+      "type": "number"
+    },
+    "passengerCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "passengerWeight": {
+      "type": "object",
+      "properties": {
+        "total": { "type": "number" },
+        "byClass": {
+          "type": "object",
+          "properties": {
+            "first": { "type": "number" },
+            "business": { "type": "number" },
+            "premiumEconomy": { "type": "number" },
+            "economy": { "type": "number" }
+          }
+        }
+      }
+    },
+    "baggageWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "baggageDistribution": {
+      "type": "object",
+      "properties": {
+        "forwardHold": { "type": "number", "minimum": 0 },
+        "aftHold": { "type": "number", "minimum": 0 },
+        "bulkHold": { "type": "number", "minimum": 0 }
+      }
+    },
+    "cargoWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "cargoDistribution": {
+      "type": "object",
+      "properties": {
+        "forwardHold": { "type": "number", "minimum": 0 },
+        "aftHold": { "type": "number", "minimum": 0 },
+        "bulkHold": { "type": "number", "minimum": 0 },
+        "mainDeck": { "type": "number", "minimum": 0 }
+      }
+    },
+    "fuelWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "fuelBreakdown": {
+      "type": "object",
+      "properties": {
+        "tripFuelKg": { "type": "number", "minimum": 0 },
+        "taxiFuelKg": { "type": "number", "minimum": 0 },
+        "contingencyFuelKg": { "type": "number", "minimum": 0 },
+        "alternateFuelKg": { "type": "number", "minimum": 0 },
+        "finalReserveFuelKg": { "type": "number", "minimum": 0 },
+        "extraFuelKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    "zeroFuelWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "zeroFuelIndex": {
+      "type": "number"
+    },
+    "takeoffWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "takeoffIndex": {
+      "type": "number"
+    },
+    "landingWeightKg": {
+      "type": "number",
+      "minimum": 0
+    },
+    "landingIndex": {
+      "type": "number"
+    },
+    "centerOfGravity": {
+      "type": "number"
+    },
+    "centerOfGravityReference": {
+      "type": "string",
+      "enum": ["%MAC", "INDEX"]
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "maxZeroFuelWeightKg": { "type": "number", "minimum": 0 },
+        "maxTakeoffWeightKg": { "type": "number", "minimum": 0 },
+        "maxLandingWeightKg": { "type": "number", "minimum": 0 },
+        "minZeroFuelIndex": { "type": "number" },
+        "maxZeroFuelIndex": { "type": "number" },
+        "minTakeoffIndex": { "type": "number" },
+        "maxTakeoffIndex": { "type": "number" }
+      }
+    },
+    "underload": {
+      "type": "object",
+      "properties": {
+        "zfwUnderloadKg": { "type": "number" },
+        "towUnderloadKg": { "type": "number" },
+        "lwUnderloadKg": { "type": "number" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

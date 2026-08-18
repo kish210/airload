@@ -1,0 +1,233 @@
+{
+  "formCode": "F031",
+  "name": "DG Acceptance Checklist",
+  "version": "1.0",
+  "category": "dangerous_goods",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Dangerous Goods acceptance checklist used to verify each DG consignment before acceptance. Based on IATA DGR Acceptance Checks.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": false,
+      "description": "Optional - if acceptance tied to specific flight"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "checklistNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "dgEntry",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "awbNumber": { "type": "string" },
+        "shipperName": { "type": "string" },
+        "consigneeName": { "type": "string" },
+        "airportOfOrigin": { "type": "string", "format": "icao_code" },
+        "airportOfDestination": { "type": "string", "format": "icao_code" },
+        "handlingInformation": { "type": "string" },
+        "properShippingName": { "type": "string" },
+        "technicalName": { "type": "string" },
+        "className": { "type": "string" },
+        "unId": { "type": "string" },
+        "packingGroup": { "type": "string" },
+        "subsidiaryRisk": { "type": "string" },
+        "numberOfPackages": { "type": "integer", "minimum": 1 },
+        "packagingType": { "type": "string" },
+        "packingInstruction": { "type": "string" },
+        "totalNetQuantity": { "type": "number" },
+        "grossWeightKg": { "type": "number" }
+      }
+    },
+    {
+      "name": "acceptanceChecks",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "notDangerousGoodsThroughDifferentName": {
+          "type": "boolean",
+          "default": false,
+          "description": "Not dangerous goods through different name/description"
+        },
+        "classificationComplete": {
+          "type": "boolean",
+          "default": false,
+          "description": "Classification complete: class, subsidiary risk, PG, UN"
+        },
+        "shippingNameAndDescription": {
+          "type": "boolean",
+          "default": false,
+          "description": "Proper shipping name and description correct"
+        },
+        "materialForbidden": {
+          "type": "boolean",
+          "default": false,
+          "description": "Not forbidden for transport in air"
+        },
+        "quantityLimited": {
+          "type": "boolean",
+          "default": false,
+          "description": "Quantity within limits"
+        },
+        "packagingCorrect": {
+          "type": "boolean",
+          "default": false,
+          "description": "Packaging type and packing instruction correct"
+        },
+        "packagesUndamaged": {
+          "type": "boolean",
+          "default": false,
+          "description": "Packages undamaged, no leakage"
+        },
+        "packageMarkings": {
+          "type": "boolean",
+          "default": false,
+          "description": "Package markings correct"
+        },
+        "packageLabels": {
+          "type": "boolean",
+          "default": false,
+          "description": "Package hazard labels correct"
+        },
+        "overpackMarked": {
+          "type": "boolean",
+          "default": false,
+          "description": "Overpack marked with required information"
+        },
+        "shippersDeclaration": {
+          "type": "boolean",
+          "default": false,
+          "description": "Shipper's Declaration present and correct"
+        },
+        "shippersDeclarationSignatory": {
+          "type": "boolean",
+          "default": false,
+          "description": "Shipper's Declaration signed by shipper"
+        },
+        "airWaybillCorrect": {
+          "type": "boolean",
+          "default": false,
+          "description": "AWB correctly completed with DG info"
+        },
+        "relevantForbiddenGoods": {
+          "type": "boolean",
+          "default": false,
+          "description": "Relevant dangerous goods forbidden in passenger/non-cargo aircraft"
+        },
+        "restrictedArticlesNotification": {
+          "type": "boolean",
+          "default": false,
+          "description": "Trained person notified if restricted articles"
+        },
+        "compatibilityCheck": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compatibility between different DG checked"
+        },
+        "ageAndState": {
+          "type": "boolean",
+          "default": false,
+          "description": "9G requirement: age valid, packaging correct"
+        }
+      }
+    },
+    {
+      "name": "photoEvidence",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" },
+      "description": "References to photos of packages for evidence"
+    },
+    {
+      "name": "acceptanceResult",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "accepted": { "type": "boolean" },
+        "rejected": { "type": "boolean" },
+        "rejectionReason": { "type": "string", "enum": ["MISSING_DECLARATION", "IMPROPER_PACKAGING", "FORBIDDEN_GOODS", "CLASSIFICATION_ERROR", "UNDAMAGED", "LIMITS_EXCEEDED", "OTHER"] },
+        "rejectionDetail": { "type": "string" },
+        "rejectionNotifyShipper": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "acceptedBy",
+      "type": "string",
+      "required": true,
+      "description": "Trained DG acceptance personnel"
+    },
+    {
+      "name": "acceptedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "dgTrainingCertificateRef",
+      "type": "string",
+      "required": true,
+      "description": "Reference to DG training certificate"
+    },
+    {
+      "name": "verifiedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "verifiedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "INITIATED",
+    "INSPECTION_IN_PROGRESS",
+    "CHECKLIST_COMPLETE",
+    "VERIFIED",
+    "ACCEPTED",
+    "REJECTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DG_AGENT", "CARGO_AGENT", "DG_OFFICER"],
+    "inspect": ["DG_AGENT", "DG_OFFICER"],
+    "accept": ["DG_AGENT", "DG_OFFICER", "DG_SUPERVISOR"],
+    "verify": ["DG_OFFICER", "DG_SUPERVISOR"],
+    "view": ["CARGO", "LOAD_CONTROL", "SAFETY", "COMPLIANCE", "SHIPPER", "AUTHORITIES"]
+  },
+  "validationRules": [
+    { "field": "acceptanceResult.accepted", "rule": "requires_all_checks", "message": "All mandatory acceptance checks must be complete" },
+    { "field": "acceptedBy", "rule": "has_valid_dg_training", "message": "Acceptance personnel must have current DG training" }
+  ],
+  "uiMetadata": {
+    "layout": "dg_acceptance_checklist",
+    "sections": [
+      { "id": "header", "label": "Checklist Identification", "fields": ["checklistNumber", "operationalDate", "flightNumber"] },
+      { "id": "entry", "label": "DG Consignment Details", "fields": ["dgEntry"] },
+      { "id": "checks", "label": "Acceptance Checks", "fields": ["acceptanceChecks"] },
+      { "id": "evidence", "label": "Photo Evidence", "fields": ["photoEvidence"] },
+      { "id": "result", "label": "Acceptance Result", "fields": ["acceptanceResult"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["acceptedBy", "acceptedTime", "dgTrainingCertificateRef", "verifiedBy", "verifiedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "dg_acceptance_checklist",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "copies": 2,
+    "distribution": ["Cargo Acceptance", "Station File"]
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA DGR Section 9, ICAO Technical Instructions",
+  "notes": "Acceptance check must be completed by trained personnel. Checklist retained for audit (2 years minimum per IATA DGR)."
+}

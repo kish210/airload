@@ -1,0 +1,237 @@
+{
+  "formCode": "F016",
+  "name": "Unaccompanied Minor Record",
+  "version": "1.0",
+  "category": "passenger",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Record for unaccompanied minor (UMNR) handling including guardian details, handover procedures, and in-flight supervision.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "minor",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "givenName": { "type": "string", "minLength": 1 },
+        "familyName": { "type": "string", "minLength": 1 },
+        "dateOfBirth": { "type": "string", "format": "date" },
+        "age": { "type": "integer", "minimum": 5, "maximum": 17 },
+        "gender": { "type": "string", "enum": ["M", "F", "X"] },
+        "nationality": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "documentType": { "type": "string", "enum": ["P", "ID"] },
+        "documentNumber": { "type": "string" },
+        "documentExpiry": { "type": "string", "format": "date" },
+        "documentCountry": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "seat": { "type": "string" }
+      }
+    },
+    {
+      "name": "departureGuardian",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "givenName": { "type": "string", "minLength": 1 },
+        "familyName": { "type": "string", "minLength": 1 },
+        "relationship": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "address": { "type": "string" },
+        "idType": { "type": "string" },
+        "idNumber": { "type": "string" },
+        "authorizedToRelease": { "type": "boolean", "default": true },
+        "handoverTime": { "type": "string", "format": "date-time" },
+        "handoverAgent": { "type": "string" },
+        "handoverVerified": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "arrivalGuardian",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "givenName": { "type": "string", "minLength": 1 },
+        "familyName": { "type": "string", "minLength": 1 },
+        "relationship": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "address": { "type": "string" },
+        "idType": { "type": "string" },
+        "idNumber": { "type": "string" },
+        "authorizedToCollect": { "type": "boolean", "default": true },
+        "collectionTime": { "type": "string", "format": "date-time" },
+        "collectionAgent": { "type": "string" },
+        "collectionVerified": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "alternateGuardian",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "givenName": { "type": "string" },
+        "familyName": { "type": "string" },
+        "relationship": { "type": "string" },
+        "phone": { "type": "string" },
+        "authorizedToCollect": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "bookingReference",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "ticketNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "umnrFeePaid",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "umnrFeeAmount",
+      "type": "number",
+      "required": false,
+      "minimum": 0
+    },
+    {
+      "name": "specialInstructions",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "medicalConditions",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "medicationRequired",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "medicationDetails",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "allergies",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "escortAssigned",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "crewMember": { "type": "string" },
+        "crewPosition": { "type": "string" },
+        "assignedAt": { "type": "string", "format": "date-time" },
+        "handoverConfirmed": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "departureHandoverCompleted",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "arrivalHandoverCompleted",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedAt",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "BOOKED",
+    "CHECKED_IN",
+    "DEPARTURE_HANDOVER",
+    "IN_FLIGHT",
+    "ARRIVAL_HANDOVER",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["RESERVATIONS", "CHECKIN_AGENT", "SPECIAL_ASSISTANCE_DESK"],
+    "modify": ["CHECKIN_AGENT", "SPECIAL_ASSISTANCE_DESK", "DUTY_MANAGER"],
+    "departure_handover": ["CHECKIN_AGENT", "GATE_AGENT", "SPECIAL_ASSISTANCE_DESK"],
+    "inflight_supervision": ["CREW", "PURSER"],
+    "arrival_handover": ["ARRIVAL_AGENT", "SPECIAL_ASSISTANCE_DESK", "DUTY_MANAGER"],
+    "view": ["GUARDIANS", "CREW", "DISPATCHER", "MANAGEMENT", "AUTHORITIES"]
+  },
+  "validationRules": [
+    { "field": "minor.age", "rule": "between", "min": 5, "max": 17, "message": "UMNR age must be 5-17 years" },
+    { "field": "departureGuardian.handoverTime", "rule": "before_departure", "message": "Departure handover must be before flight departure" },
+    { "field": "arrivalGuardian.collectionTime", "rule": "after_arrival", "message": "Collection must be after flight arrival" }
+  ],
+  "uiMetadata": {
+    "layout": "unaccompanied_minor_record",
+    "sections": [
+      { "id": "header", "label": "Flight & Booking", "fields": ["flightNumber", "airlineCode", "departureAirport", "arrivalAirport", "operationalDate", "bookingReference", "ticketNumber", "umnrFeePaid", "umnrFeeAmount"] },
+      { "id": "minor", "label": "Minor Details", "fields": ["minor"] },
+      { "id": "departureGuardian", "label": "Departure Guardian", "fields": ["departureGuardian"] },
+      { "id": "arrivalGuardian", "label": "Arrival Guardian", "fields": ["arrivalGuardian"] },
+      { "id": "alternate", "label": "Alternate Guardian", "fields": ["alternateGuardian"] },
+      { "id": "medical", "label": "Medical & Special Needs", "fields": ["specialInstructions", "medicalConditions", "medicationRequired", "medicationDetails", "allergies"] },
+      { "id": "escort", "label": "In-Flight Escort", "fields": ["escortAssigned"] },
+      { "id": "handovers", "label": "Handovers", "fields": ["departureHandoverCompleted", "arrivalHandoverCompleted"] },
+      { "id": "preparation", "label": "Preparation", "fields": ["preparedBy", "preparedAt"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "unaccompanied_minor_record",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "copies": 3,
+    "distribution": ["Departure Station", "Crew", "Arrival Station"]
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA Resolution 700, ICAO Annex 9, Operator UMNR policy",
+  "notes": "UMNR handling per operator policy and State regulations. Minimum age typically 5, maximum 17. Escort assignment mandatory for connections."
+}

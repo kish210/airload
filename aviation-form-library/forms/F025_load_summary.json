@@ -1,0 +1,210 @@
+{
+  "formCode": "F025",
+  "name": "Load Summary",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Consolidated load summary for management reporting and flight close-out. Aggregates passenger, baggage, cargo, mail, and fuel figures.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "summaryNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "passengerLoad",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "firstClass": { "type": "integer", "minimum": 0 },
+        "businessClass": { "type": "integer", "minimum": 0 },
+        "premiumEconomy": { "type": "integer", "minimum": 0 },
+        "economyClass": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 },
+        "infants": { "type": "integer", "minimum": 0 },
+        "children": { "type": "integer", "minimum": 0 },
+        "totalWeightKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "baggageLoad",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "pieces": { "type": "integer", "minimum": 0 },
+        "weightKg": { "type": "number", "minimum": 0 },
+        "excessPieces": { "type": "integer", "minimum": 0 },
+        "excessWeightKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "cargoLoad",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "weightKg": { "type": "number", "minimum": 0 },
+        "pieces": { "type": "integer", "minimum": 0 },
+        "unitsCarried": { "type": "integer", "minimum": 0 },
+        "specialLoads": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "mailLoad",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "weightKg": { "type": "number", "minimum": 0 },
+        "bags": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "fuelLoad",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalFuelKg": { "type": "number", "minimum": 0 },
+        "tripFuelKg": { "type": "number", "minimum": 0 },
+        "alternateFuelKg": { "type": "number", "minimum": 0 }
+      }
+    },
+    {
+      "name": "totalLoad",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalWeightKg": { "type": "number", "minimum": 0 },
+        "occupancy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "availableSeats": { "type": "integer", "minimum": 0 },
+        "soldSeats": { "type": "integer", "minimum": 0 },
+        "loadFactorPct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    {
+      "name": "calculatedLoadFactorPct",
+      "type": "number",
+      "required": false,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Computed load factor from soldSeats / availableSeats"
+    },
+    {
+      "name": "revenueData",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "passengerRevenue": { "type": "number", "minimum": 0 },
+        "cargoRevenue": { "type": "number", "minimum": 0 },
+        "baggageRevenue": { "type": "number", "minimum": 0 },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+      }
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "reviewedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reviewedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["DRAFT", "COMPLETED", "REVIEWED", "FINALIZED"],
+      "default": "DRAFT"
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "REVIEWED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "REVENUE_ACCOUNTING", "FLIGHT_OPS"],
+    "complete": ["LOAD_CONTROLLER"],
+    "review": ["FLIGHT_OPS_MANAGER", "REVENUE_MANAGER"],
+    "finalize": ["FLIGHT_OPS_MANAGER", "STATION_MANAGER"],
+    "view": ["MANAGEMENT", "REVENUE_ACCOUNTING", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "totalLoad.loadFactorPct", "rule": "equals", "refField": "calculatedLoadFactorPct", "message": "Load factor must match calculated value" },
+    { "field": "passengerLoad.totalWeightKg", "rule": "positive_or_zero", "message": "Passenger weight must not be negative" }
+  ],
+  "uiMetadata": {
+    "layout": "load_summary",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "summaryNumber"] },
+      { "id": "passengers", "label": "Passenger Load", "fields": ["passengerLoad"] },
+      { "id": "baggage", "label": "Baggage Load", "fields": ["baggageLoad"] },
+      { "id": "cargo", "label": "Cargo Load", "fields": ["cargoLoad"] },
+      { "id": "mail", "label": "Mail Load", "fields": ["mailLoad"] },
+      { "id": "fuel", "label": "Fuel Load", "fields": ["fuelLoad"] },
+      { "id": "total", "label": "Total Load & Occupancy", "fields": ["totalLoad"] },
+      { "id": "revenue", "label": "Revenue Data", "fields": ["revenueData"] },
+      { "id": "authorization", "label": "Review & Approval", "fields": ["preparedBy", "preparedTime", "reviewedBy", "reviewedTime", "status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "load_summary",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 515, Operator reporting standards",
+  "notes": "Load summary generated after flight close. Revenue data optional per accounting configuration."
+}

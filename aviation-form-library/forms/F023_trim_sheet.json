@@ -1,0 +1,202 @@
+{
+  "formCode": "F023",
+  "name": "Trim Sheet",
+  "version": "1.0",
+  "category": "loadcontrol",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Trim sheet providing aircraft trim settings (stabilizer/trim setting) for takeoff based on weight and CG. Based on IATA AHM 515 and operator W&B manual.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "takeoffWeightKg",
+      "type": "number",
+      "required": true,
+      "description": "Takeoff gross weight (kg)"
+    },
+    {
+      "name": "maxTakeoffWeightKg",
+      "type": "number",
+      "required": false,
+      "description": "Certified maximum takeoff weight (kg) from aircraft configuration"
+    },
+    {
+      "name": "zeroFuelWeightKg",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "takeoffCenterOfGravity",
+      "type": "number",
+      "required": true,
+      "description": "Takeoff CG as % MAC"
+    },
+    {
+      "name": "takeoffIndex",
+      "type": "number",
+      "required": true,
+      "description": "Takeoff index units"
+    },
+    {
+      "name": "stabilizerTrimSetting",
+      "type": "number",
+      "required": true,
+      "description": "Stabilizer trim setting (units)"
+    },
+    {
+      "name": "stabilizerTrimUnit",
+      "type": "string",
+      "required": true,
+      "enum": ["UNITS", "NOSE_UP", "NOSE_DOWN"],
+      "default": "UNITS"
+    },
+    {
+      "name": "elevatorTrim",
+      "type": "number",
+      "required": false,
+      "description": "Elevator trim setting (if applicable)"
+    },
+    {
+      "name": "fuelWeightKg",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "fuelTankTrimAdjustment",
+      "type": "number",
+      "required": false,
+      "description": "Index adjustment for fuel tank distribution"
+    },
+    {
+      "name": "trimRunway",
+      "type": "string",
+      "required": true,
+      "description": "Active runway for which trim is calculated"
+    },
+    {
+      "name": "flapsSetting",
+      "type": "string",
+      "required": false,
+      "description": "Takeoff flaps setting"
+    },
+    {
+      "name": "cgEnvelopeCheck",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "takeoffCgWithinLimits": { "type": "boolean" },
+        "zfwCgWithinLimits": { "type": "boolean" },
+        "landingCgWithinLimits": { "type": "boolean" },
+        "maxCg": { "type": "number" },
+        "minCg": { "type": "number" }
+      }
+    },
+    {
+      "name": "loadsheetReference",
+      "type": "string",
+      "required": true,
+      "description": "Reference to associated loadsheet"
+    },
+    {
+      "name": "loadControlOfficer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "captainAcknowledged",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPUTED",
+    "ISSUED",
+    "ACKNOWLEDGED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["LOAD_CONTROLLER", "LOAD_CONTROL_SYSTEM"],
+    "compute": ["LOAD_CONTROLLER"],
+    "issue": ["LOAD_CONTROLLER", "SENIOR_LOAD_CONTROLLER"],
+    "acknowledge": ["CAPTAIN", "FIRST_OFFICER"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "cgEnvelopeCheck.takeoffCgWithinLimits", "rule": "must_be_true", "message": "Takeoff CG outside limits" },
+    { "field": "cgEnvelopeCheck.zfwCgWithinLimits", "rule": "must_be_true", "message": "ZFW CG outside limits" },
+    { "field": "takeoffWeightKg", "rule": "less_than_or_equal", "refField": "maxTakeoffWeightKg", "message": "Takeoff weight exceeds limits" }
+  ],
+  "uiMetadata": {
+    "layout": "trim_sheet",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate"] },
+      { "id": "weights", "label": "Weights & CG", "fields": ["takeoffWeightKg", "zeroFuelWeightKg", "takeoffCenterOfGravity", "takeoffIndex", "fuelWeightKg", "fuelTankTrimAdjustment"] },
+      { "id": "trim", "label": "Trim Settings", "fields": ["stabilizerTrimSetting", "stabilizerTrimUnit", "elevatorTrim", "flapsSetting"] },
+      { "id": "runway", "label": "Runway", "fields": ["trimRunway"] },
+      { "id": "envelope", "label": "CG Envelope Check", "fields": ["cgEnvelopeCheck"] },
+      { "id": "references", "label": "References", "fields": ["loadsheetReference"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["loadControlOfficer", "preparedTime", "captainAcknowledged", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "trim_sheet",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "copies": 2,
+    "distribution": ["Captain", "Load Control"]
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 515, Operator W&B and Trim manual",
+  "notes": "Trim setting must be acknowledged by Captain before takeoff. Aircraft-specific trim data per approved trim tables."
+}

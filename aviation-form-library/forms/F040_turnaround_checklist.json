@@ -1,0 +1,198 @@
+{
+  "formCode": "F040",
+  "name": "Turnaround Checklist",
+  "version": "1.0",
+  "category": "ground",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Aircraft turnaround checklist coordinating ground handling services during turnaround. Based on IATA AHM 620 and ground handling standards.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "stand",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "groundServices",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "serviceName": { "type": "string", "enum": ["JETWAY", "STAIRS", "PASSENGER_BUS", "BRIDGE", "FUEL", "CATERING", "CLEANING", "WATER", "LAVATORY", "BAGGAGE_DELIVERY", "BAGGAGE_LOADING", "CARGO_LOADING", "DE_ICING", "GROUND_POWER", "AIR_CONDITIONING", "TOWING", "WHEEL_CHOCKS", "GUARDING", "STAFF_TRANSPORT", "OTHER"] },
+          "provider": { "type": "string" },
+          "requested": { "type": "boolean", "default": false },
+          "arrived": { "type": "boolean", "default": false },
+          "arrivedTime": { "type": "string", "format": "date-time" },
+          "started": { "type": "boolean", "default": false },
+          "startedTime": { "type": "string", "format": "date-time" },
+          "completed": { "type": "boolean", "default": false },
+          "completedTime": { "type": "string", "format": "date-time" },
+          "remarks": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "criticalPath",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "event": { "type": "string" },
+          "targetTime": { "type": "string", "format": "date-time" },
+          "actualTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "delays",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "service": { "type": "string" },
+          "delayMinutes": { "type": "integer", "minimum": 0 },
+          "reason": { "type": "string" },
+          "delayCode": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "lastMinuteChanges",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "time": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
+          "notifiedTo": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "completionStatus",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "allServicesComplete": { "type": "boolean", "default": false },
+        "turnaroundCompleteTime": { "type": "string", "format": "date-time" },
+        "readyForPushback": { "type": "boolean", "default": false },
+        "coordinator": { "type": "string" }
+      }
+    },
+    {
+      "name": "createdBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "createdTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "SCHEDULED",
+    "IN_PROGRESS",
+    "DELAYED",
+    "COMPLETED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["TURNAROUND_COORDINATOR", "RAMP_SUPERVISOR"],
+    "update": ["TURNAROUND_COORDINATOR", "RAMP_SUPERVISOR", "GROUND_HANDLER"],
+    "confirm": ["TURNAROUND_COORDINATOR", "STATION_MANAGER"],
+    "view": ["CREW", "DISPATCHER", "GROUND_HANDLING", "FLIGHT_OPS", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "groundServices", "rule": "all_complete_before_departure", "message": "All required services must complete before departure" },
+    { "field": "completionStatus.allServicesComplete", "rule": "must_be_true", "message": "Turnaround incomplete" }
+  ],
+  "uiMetadata": {
+    "layout": "turnaround_checklist",
+    "sections": [
+      { "id": "header", "label": "Flight Information", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "stand"] },
+      { "id": "times", "label": "Schedule & Actual Times", "fields": ["scheduledArrival", "scheduledDeparture", "actualArrival", "actualDeparture"] },
+      { "id": "services", "label": "Ground Services", "fields": ["groundServices"] },
+      { "id": "criticalPath", "label": "Critical Path", "fields": ["criticalPath"] },
+      { "id": "delays", "label": "Delays", "fields": ["delays"] },
+      { "id": "lmc", "label": "Last Minute Changes", "fields": ["lastMinuteChanges"] },
+      { "id": "completion", "label": "Completion", "fields": ["completionStatus"] },
+      { "id": "authorization", "label": "Created By", "fields": ["createdBy", "createdTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "turnaround_checklist",
+    "pageSize": "A4",
+    "orientation": "landscape"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHM 620, Ground Handling Standards, Operator turnaround procedures",
+  "notes": "Turnaround checklist drives on-time departure coordination. Service providers confirm each task."
+}

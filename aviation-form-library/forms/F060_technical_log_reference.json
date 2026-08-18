@@ -1,0 +1,183 @@
+{
+  "formCode": "F060",
+  "name": "Technical Log Reference",
+  "version": "1.0",
+  "category": "maintenance",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Aircraft Technical Log (Journey Log) reference capturing aircraft airworthiness status, deferred defects (MEL/CDL), and maintenance actions per ICAO Annex 6.",
+  "fields": [
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftSerialNumber",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "operatorName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "entryNumber",
+      "type": "string",
+      "required": true,
+      "description": "Technical log entry number"
+    },
+    {
+      "name": "time",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "station",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "captainEntry",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "flightNumber": { "type": "string" },
+        "aircraftServiceabilityStatement": { "type": "string" },
+        "captainName": { "type": "string" },
+        "captainSignature": { "type": "string", "format": "base64" },
+        "entryTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "defectsReported",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "defectDescription": { "type": "string" },
+          "atcAfterActionCode": { "type": "string" },
+          "reportedTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "melItems",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "melReference": { "type": "string" },
+          "system": { "type": "string" },
+          "description": { "type": "string" },
+          "restrictions": { "type": "string" },
+          "authorization": { "type": "string" },
+          "expiry": { "type": "string", "format": "date" }
+        }
+      },
+      "description": "Minimum Equipment List items active"
+    },
+    {
+      "name": "cdlItems",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "cdlReference": { "type": "string" },
+          "description": { "type": "string" },
+          "restrictions": { "type": "string" },
+          "authorization": { "type": "string" }
+        }
+      },
+      "description": "Configuration Deviation List items active"
+    },
+    {
+      "name": "maintenanceActions",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "engineersName": { "type": "string" },
+          "engineersLicense": { "type": "string" },
+          "certification": { "type": "string" },
+          "actionTime": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    {
+      "name": "groundEngineerRelease",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "releaseCertified": { "type": "boolean", "default": false },
+        "releaseReference": { "type": "string" },
+        "releaseTime": { "type": "string", "format": "date-time" },
+        "releaseType": { "type": "string", "enum": ["CRS", "REFUEL", "MAINTENANCE", "NORMAL"] },
+        "certifyingEngineer": { "type": "string" }
+      }
+    },
+    {
+      "name": "certificationOfMaintenance",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "remarks",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "OPEN",
+    "DEFECTS_LOGGED",
+    "MAINTENANCE_ACTIONS",
+    "CERTIFIED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["PIC", "ENGINEER", "STATION_AGENT"],
+    "log_defect": ["PIC", "ENGINEER"],
+    "perform_maint": ["ENGINEER", "MAINTENANCE_ORGANIZATION"],
+    "certify": ["ENGINEER", "EXEMPTION_HOLDER", "AUTHORIZED_LICENSEE"],
+    "view": ["CREW", "MAINTENANCE", "FLIGHT_OPS", "CAA", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "captainEntry.aircraftServiceabilityStatement", "rule": "not_empty", "message": "Captain serviceability statement required" }
+  ],
+  "uiMetadata": {
+    "layout": "technical_log_reference",
+    "sections": [
+      { "id": "header", "label": "Aircraft & Operator", "fields": ["aircraftRegistration", "aircraftType", "aircraftSerialNumber", "operatorName", "entryNumber", "time", "station"] },
+      { "id": "captain", "label": "Captain Entry", "fields": ["captainEntry"] },
+      { "id": "defects", "label": "Reported Defects", "fields": ["defectsReported"] },
+      { "id": "mel", "label": "Active MEL Items", "fields": ["melItems"] },
+      { "id": "cdl", "label": "Active CDL Items", "fields": ["cdlItems"] },
+      { "id": "maint", "label": "Maintenance Actions", "fields": ["maintenanceActions"] },
+      { "id": "release", "label": "Ground Engineer Release", "fields": ["groundEngineerRelease"] },
+      { "id": "remarks", "label": "Remarks", "fields": ["remarks"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "technical_log_reference",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "copies": 2,
+    "distribution": ["Aircraft Records", "Maintenance"]
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6 (Journey Log), EASA Part-M / FAA 121.693, Airworthiness regulations",
+  "notes": "Technical log entries retained per airworthiness requirements. MEL/CDL sanctioned by operator's State authority."
+}

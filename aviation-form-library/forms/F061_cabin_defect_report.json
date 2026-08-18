@@ -1,0 +1,165 @@
+{
+  "formCode": "F061",
+  "name": "Cabin Defect Report",
+  "version": "1.0",
+  "category": "maintenance",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Cabin defect report for defects found by cabin crew during flight. Routes defects to engineering and tracks rectification.",
+  "fields": [
+    {
+      "name": "defectReportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "reportedBy",
+      "type": "string",
+      "required": true,
+      "description": "Cabin crew member"
+    },
+    {
+      "name": "reportedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "defects",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "area": { "type": "string", "enum": ["COCKPIT", "GALLEY", "LAVATORY", "CABIN", "SEAT", "OVERHEAD_BIN", "EMERGENCY_EQUIPMENT", "IFEC", "WINDOW", "DOOR", "LIGHTING", "ENTERTAINMENT", "WATER", "VACUUM", "OTHER"] },
+          "location": { "type": "string", "description": "Specific location (e.g., seat 12A, LAV 2)" },
+          "description": { "type": "string" },
+          "severity": { "type": "string", "enum": ["MINOR", "MAJOR", "CRITICAL"] },
+          "observedInFlight": { "type": "boolean", "default": false },
+          "actionTaken": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "criticalDefectImmediateReport",
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "description": "Whether defect requires immediate reporting during flight"
+    },
+    {
+      "name": "captainNotified",
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "urgency",
+      "type": "string",
+      "required": true,
+      "enum": ["ROUTINE", "URGENT", "GROUND_ONLY", "IMMEDIATE"]
+    },
+    {
+      "name": "engineeringReview",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "reviewedBy": { "type": "string" },
+        "reviewedTime": { "type": "string", "format": "date-time" },
+        "assessment": { "type": "string" },
+        "correctiveAction": { "type": "string" },
+        "defectClosed": { "type": "boolean", "default": false },
+        "closedTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    {
+      "name": "photosAttached",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["OPEN", "UNDER_REVIEW", "ACTION_TAKEN", "CLOSED"],
+      "default": "OPEN"
+    }
+  ],
+  "workflow": [
+    "REPORTED",
+    "ROUTED_TO_ENGINEERING",
+    "UNDER_REVIEW",
+    "CORRECTED",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["CABIN_CREW", "PURSER"],
+    "route": ["FLIGHT_OPS", "ENGINEERING"],
+    "review": ["ENGINEERING", "MAINTENANCE_CONTROL"],
+    "close": ["ENGINEERING"],
+    "view": ["CREW", "ENGINEERING", "MAINTENANCE", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "defects", "rule": "not_empty", "message": "At least one defect required" },
+    { "field": "criticalDefectImmediateReport", "rule": "captain_notified_if_critical", "message": "Captain must be notified of critical defects" }
+  ],
+  "uiMetadata": {
+    "layout": "cabin_defect_report",
+    "sections": [
+      { "id": "header", "label": "Report Identification", "fields": ["defectReportNumber", "flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate"] },
+      { "id": "reporter", "label": "Reporter", "fields": ["reportedBy", "reportedTime", "urgency"] },
+      { "id": "defects", "label": "Defects", "fields": ["defects", "criticalDefectImmediateReport", "captainNotified"] },
+      { "id": "photos", "label": "Photos", "fields": ["photosAttached"] },
+      { "id": "engineering", "label": "Engineering Review", "fields": ["engineeringReview"] },
+      { "id": "status", "label": "Status", "fields": ["status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "cabin_defect_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "Operator cabin procedures, EASA ORO.CC / FAA Part 121, Maintenance control procedures",
+  "notes": "Critical defects reported during flight to flight crew. Cabin defect rectification per MEL/engineering procedures."
+}

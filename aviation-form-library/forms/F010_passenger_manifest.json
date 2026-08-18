@@ -1,0 +1,190 @@
+{
+  "formCode": "F010",
+  "name": "Passenger Manifest",
+  "version": "1.0",
+  "category": "passenger",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Passenger manifest for departure control and border authorities. Contains passenger details per ICAO Annex 9 and operator requirements.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "passengers",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "sequenceNumber": { "type": "integer" },
+          "givenName": { "type": "string", "minLength": 1 },
+          "familyName": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "enum": ["MR", "MRS", "MS", "MSTR", "MISS", "DR", "CAPT", "REV"] },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["M", "F", "X", "U"] },
+          "nationality": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "documentType": { "type": "string", "enum": ["P", "ID", "V", "AC", "IP", "OT"] },
+          "documentNumber": { "type": "string" },
+          "documentExpiry": { "type": "string", "format": "date" },
+          "documentCountry": { "type": "string", "minLength": 3, "maxLength": 3 },
+          "seat": { "type": "string" },
+          "class": { "type": "string", "enum": ["F", "C", "Y", "W", "J"] },
+          "checkInStatus": { "type": "string", "enum": ["NOT_CHECKED_IN", "CHECKED_IN", "BOARDED", "NO_SHOW", "GO_SHOW", "OFFLOADED"] },
+          "checkInTime": { "type": "string", "format": "date-time" },
+          "boardingTime": { "type": "string", "format": "date-time" },
+          "baggageCount": { "type": "integer", "minimum": 0, "default": 0 },
+          "baggageWeightKg": { "type": "number", "minimum": 0, "default": 0 },
+          "ssrCodes": { "type": "array", "items": { "type": "string" } },
+          "frequentFlyerNumber": { "type": "string" },
+          "frequentFlyerTier": { "type": "string" },
+          "visaNumber": { "type": "string" },
+          "visaExpiry": { "type": "string", "format": "date" },
+          "visaCountry": { "type": "string" }
+        },
+        "required": ["sequenceNumber", "givenName", "familyName", "dateOfBirth", "nationality", "documentType", "documentNumber", "documentExpiry", "documentCountry"]
+      }
+    },
+    {
+      "name": "totalPassengers",
+      "type": "integer",
+      "required": true,
+      "minimum": 0
+    },
+    {
+      "name": "totalCheckedIn",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalBoarded",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalNoShow",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalInfants",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "totalChildren",
+      "type": "integer",
+      "required": false,
+      "minimum": 0,
+      "default": 0
+    },
+    {
+      "name": "preparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "preparedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "authorizedBy",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "authorizedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "GENERATED",
+    "VERIFIED",
+    "SUBMITTED",
+    "CLOSED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["CHECKIN_AGENT", "DCS_SYSTEM"],
+    "modify": ["CHECKIN_AGENT", "SENIOR_AGENT", "DCS_SYSTEM"],
+    "verify": ["SENIOR_AGENT", "DUTY_MANAGER"],
+    "submit": ["SENIOR_AGENT", "DUTY_MANAGER"],
+    "view": ["CREW", "DISPATCHER", "AUTHORITIES", "MANAGEMENT"]
+  },
+  "validationRules": [
+    { "field": "passengers", "rule": "unique_sequence", "message": "Sequence numbers must be unique" },
+    { "field": "passengers[*].documentExpiry", "rule": "after", "refField": "operationalDate", "message": "Document must not be expired" },
+    { "field": "totalPassengers", "rule": "equals", "refField": "passengers.length", "message": "Total passengers must match passenger list count" }
+  ],
+  "uiMetadata": {
+    "layout": "passenger_manifest",
+    "sections": [
+      { "id": "header", "label": "Flight Information", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate", "scheduledDeparture"] },
+      { "id": "summary", "label": "Passenger Summary", "fields": ["totalPassengers", "totalCheckedIn", "totalBoarded", "totalNoShow", "totalInfants", "totalChildren"] },
+      { "id": "passengers", "label": "Passenger List", "fields": ["passengers"] },
+      { "id": "authorization", "label": "Authorization", "fields": ["preparedBy", "preparedTime", "authorizedBy", "authorizedTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "passenger_manifest",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "multiPage": true,
+    "fieldsMapping": {
+      "passengers": "Passenger rows",
+      "totalPassengers": "Summary section"
+    }
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 9, IATA Resolution 728, APIS requirements",
+  "notes": "Manifest must be submitted to authorities per State requirements. Data privacy per GDPR/local regulations."
+}

@@ -1,0 +1,222 @@
+{
+  "formCode": "F030",
+  "name": "NOTOC",
+  "version": "1.0",
+  "category": "dangerous_goods",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Notice to Captain (NOTOC) listing all dangerous goods loaded on board. Per IATA DGR and ICAO Technical Instructions.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "notocNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "dgAccepted",
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "description": "Dangerous goods accepted for this flight"
+    },
+    {
+      "name": "certificateOfAcceptance",
+      "type": "string",
+      "required": false,
+      "description": "Reference to acceptance checklist"
+    },
+    {
+      "name": "dgEntries",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "awbNumber": { "type": "string" },
+          "shipper": { "type": "string" },
+          "consignee": { "type": "string" },
+          "airportOfOrigin": { "type": "string", "format": "icao_code" },
+          "airportOfDestination": { "type": "string", "format": "icao_code" },
+          "airportOfLoading": { "type": "string", "format": "icao_code" },
+          "airportOfUnloading": { "type": "string", "format": "icao_code" },
+          "properShippingName": { "type": "string" },
+          "technicalName": { "type": "string" },
+          "className": { "type": "string" },
+          "unId": { "type": "string" },
+          "packingGroup": { "type": "string" },
+          "subsidiaryRisk": { "type": "string" },
+          "quantity": { "type": "number" },
+          "packingInstruction": { "type": "string" },
+          "numberOfPackages": { "type": "integer", "minimum": 1 },
+          "typeOfPackaging": { "type": "string" },
+          "netQuantityKg": { "type": "number" },
+          "grossWeightKg": { "type": "number" },
+          "positionOnAircraft": { "type": "string" },
+          "aircraftLoadingRestrictions": { "type": "string" },
+          "dangerousGoodsCode": { "type": "string" },
+          "specialHandling": { "type": "string" },
+          "overpackUsed": { "type": "boolean", "default": false },
+          "overpackDescription": { "type": "string" },
+          "compatibilityCheck": { "type": "boolean", "default": false },
+          "cryogenicLiquid": { "type": "boolean", "default": false }
+        }
+      }
+    },
+    {
+      "name": "radioactiveMaterials",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "unId": { "type": "string" },
+          "transportIndex": { "type": "number" },
+          "category": { "type": "string", "enum": ["I_WHITE", "II_YELLOW", "III_YELLOW"] },
+          "position": { "type": "string" },
+          "numberOfPackages": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    {
+      "name": "dgInPassengerBaggage",
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "object",
+        "properties": {
+          "unId": { "type": "string" },
+          "className": { "type": "string" },
+          "properShippingName": { "type": "string" },
+          "quantity": { "type": "number" },
+          "seat": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "netExplosiveQuantityKg",
+      "type": "number",
+      "required": false,
+      "minimum": 0,
+      "description": "Total net explosive quantity for Class 1"
+    },
+    {
+      "name": "loadingRemarks",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "captainBriefed",
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    {
+      "name": "captainBriefedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "loadControlOfficer",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "lcoTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "dgInspector",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPLETED",
+    "CAPTAIN_BRIEFED",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DG_OFFICER", "LOAD_CONTROLLER", "CARGO_AGENT"],
+    "complete": ["DG_OFFICER", "LOAD_CONTROLLER"],
+    "captain_brief": ["DG_OFFICER", "LOAD_CONTROLLER"],
+    "finalize": ["DG_OFFICER", "SENIOR_LOAD_CONTROLLER"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS", "SAFETY", "CAA", "GROUND_HANDLING"]
+  },
+  "validationRules": [
+    { "field": "dgEntries[*].positionOnAircraft", "rule": "not_empty_if_dg", "message": "Position required for each DG entry" },
+    { "field": "dgEntries[*].compatibilityCheck", "rule": "must_be_true", "message": "Compatibility checked required" },
+    { "field": "radioactiveMaterials[*].category", "rule": "valid_category", "message": "Invalid radioactive category" },
+    { "field": "captainBriefed", "rule": "must_be_true", "message": "Captain must be briefed on DG" }
+  ],
+  "uiMetadata": {
+    "layout": "notoc",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "aircraftType", "departureAirport", "arrivalAirport", "operationalDate", "notocNumber"] },
+      { "id": "status", "label": "DG Acceptance Status", "fields": ["dgAccepted", "certificateOfAcceptance"] },
+      { "id": "entries", "label": "Dangerous Goods Entries", "fields": ["dgEntries"] },
+      { "id": "radioactive", "label": "Radioactive Materials", "fields": ["radioactiveMaterials"] },
+      { "id": "paxBaggage", "label": "DG in Passenger Baggage", "fields": ["dgInPassengerBaggage"] },
+      { "id": "explosives", "label": "Net Explosive Quantity", "fields": ["netExplosiveQuantityKg"] },
+      { "id": "remarks", "label": "Loading Remarks", "fields": ["loadingRemarks"] },
+      { "id": "authorization", "label": "Captain Briefing & Authorization", "fields": ["captainBriefed", "captainBriefedTime", "captainName", "loadControlOfficer", "lcoTime", "dgInspector"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "notoc",
+    "pageSize": "A4",
+    "orientation": "portrait",
+    "copies": 3,
+    "distribution": ["Captain", "Load Control", "Station File"]
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA DGR, ICAO Technical Instructions for the Safe Transport of Dangerous Goods",
+  "notes": "NOTOC required whenever DG loaded. Captain briefing mandatory. Individual States may require notification to authorities."
+}

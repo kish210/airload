@@ -1,0 +1,205 @@
+{
+  "formCode": "F002",
+  "name": "Operational Flight Plan",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Operational Flight Plan (OFP) for flight crew. Contains detailed performance, weather, and fuel data per ICAO Annex 6 and operator requirements.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "alternateAirport",
+      "type": "string",
+      "required": false,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "aircraftType",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "departureTime",
+      "type": "string",
+      "format": "time",
+      "required": true
+    },
+    {
+      "name": "plannedRoute",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "waypoint": { "type": "string" },
+          "latitude": { "type": "number" },
+          "longitude": { "type": "number" },
+          "track": { "type": "number" },
+          "distance": { "type": "number" },
+          "flightLevel": { "type": "string" },
+          "wind": { "type": "string" },
+          "temperature": { "type": "number" },
+          "time": { "type": "string", "format": "time" },
+          "fuelUsed": { "type": "number" }
+        }
+      }
+    },
+    {
+      "name": "performanceData",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "takeoffWeight": { "type": "number" },
+        "landingWeight": { "type": "number" },
+        "zeroFuelWeight": { "type": "number" },
+        "takeoffFuel": { "type": "number" },
+        "tripFuel": { "type": "number" },
+        "contingencyFuel": { "type": "number" },
+        "alternateFuel": { "type": "number" },
+        "finalReserveFuel": { "type": "number" },
+        "extraFuel": { "type": "number" },
+        "totalFuel": { "type": "number" }
+      }
+    },
+    {
+      "name": "aircraftMaxTakeoffWeight",
+      "type": "number",
+      "required": false,
+      "description": "Certified maximum takeoff weight from AFM/aircraft configuration"
+    },
+    {
+      "name": "aircraftMaxLandingWeight",
+      "type": "number",
+      "required": false,
+      "description": "Certified maximum landing weight from AFM/aircraft configuration"
+    },
+    {
+      "name": "weatherData",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "departureMetar": { "type": "string" },
+        "departureTaf": { "type": "string" },
+        "arrivalMetar": { "type": "string" },
+        "arrivalTaf": { "type": "string" },
+        "alternateMetar": { "type": "string" },
+        "alternateTaf": { "type": "string" },
+        "enrouteSignificantWeather": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "notams",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" },
+      "description": "Relevant NOTAMs"
+    },
+    {
+      "name": "etopsData",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "etopsEntryPoint": { "type": "string" },
+        "etopsExitPoint": { "type": "string" },
+        "criticalFuel": { "type": "number" },
+        "diversionAirports": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    {
+      "name": "dispatcherName",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "dispatcherSignature",
+      "type": "string",
+      "required": false,
+      "format": "base64"
+    },
+    {
+      "name": "captainAcceptance",
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "name": "captainName",
+      "type": "string",
+      "required": false
+    }
+  ],
+  "workflow": [
+    "DRAFT",
+    "COMPUTED",
+    "REVIEWED",
+    "RELEASED",
+    "ACCEPTED",
+    "EXECUTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER"],
+    "compute": ["DISPATCHER", "FLIGHT_OPS_SYSTEM"],
+    "review": ["SENIOR_DISPATCHER", "FLIGHT_OPS_MANAGER"],
+    "release": ["DISPATCHER", "SENIOR_DISPATCHER"],
+    "accept": ["PIC"],
+    "view": ["CREW", "DISPATCHER", "FLIGHT_OPS"]
+  },
+  "validationRules": [
+    { "field": "performanceData.totalFuel", "rule": "greater_than", "value": 0, "message": "Total fuel must be positive" },
+    { "field": "performanceData.takeoffWeight", "rule": "less_than_or_equal", "refField": "aircraftMaxTakeoffWeight", "message": "Takeoff weight exceeds MTOW" },
+    { "field": "performanceData.landingWeight", "rule": "less_than_or_equal", "refField": "aircraftMaxLandingWeight", "message": "Landing weight exceeds MLW" }
+  ],
+  "uiMetadata": {
+    "layout": "ofp_standard",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "operationalDate", "departureTime"] },
+      { "id": "route", "label": "Route & Navigation", "fields": ["plannedRoute"] },
+      { "id": "performance", "label": "Performance & Fuel", "fields": ["performanceData"] },
+      { "id": "weather", "label": "Weather & NOTAMs", "fields": ["weatherData", "notams"] },
+      { "id": "etops", "label": "ETOPS", "fields": ["etopsData"] },
+      { "id": "signatures", "label": "Authorization", "fields": ["dispatcherName", "dispatcherSignature", "captainAcceptance", "captainName"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "operational_flight_plan",
+    "pageSize": "A4",
+    "orientation": "landscape",
+    "multiPage": true
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6 Part I, Operator OFP specifications",
+  "notes": "Aircraft-specific performance data must be sourced from approved AFM/POH. Fuel policy per operator requirements."
+}

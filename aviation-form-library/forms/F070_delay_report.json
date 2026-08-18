@@ -1,0 +1,193 @@
+{
+  "formCode": "F070",
+  "name": "Delay Report",
+  "version": "1.0",
+  "category": "reporting",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Flight delay report using IATA delay coding. Captures delay attribution and duration per IATA AHDM standards.",
+  "fields": [
+    {
+      "name": "reportNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "scheduledDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "scheduledArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualDeparture",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "actualArrival",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "delayAttribution",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "airline": { "type": "integer", "minimum": 0, "description": "Minutes attributable to airline" },
+        "airport": { "type": "integer", "minimum": 0 },
+        "airportAuthority": { "type": "integer", "minimum": 0 },
+        "fuelingCompany": { "type": "integer", "minimum": 0 },
+        "cateringCompany": { "type": "integer", "minimum": 0 },
+        "groundHandling": { "type": "integer", "minimum": 0 },
+        "security": { "type": "integer", "minimum": 0 },
+        "weather": { "type": "integer", "minimum": 0 },
+        "airTrafficControl": { "type": "integer", "minimum": 0 },
+        "other": { "type": "integer", "minimum": 0 }
+      }
+    },
+    {
+      "name": "delayCauses",
+      "type": "array",
+      "required": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "causeCategory": { "type": "string", "enum": ["AIRLINE", "REACTIONARY", "AIRPORT", "FUELING", "CATERING", "GROUND_HANDLING", "SECURITY", "WEATHER", "ATC", "MAINTENANCE", "CREW", "OPERATIONS", "COMMERCIAL", "OTHER"] },
+          "iataCode": { "type": "string", "description": "Two-character IATA delay code" },
+          "reason": { "type": "string" },
+          "delayMinutes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    {
+      "name": "distribution",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "cancellation": { "type": "integer", "description": "Flight cancellations (count)" },
+        "meanDelay": { "type": "number" },
+        "maxDelay": { "type": "integer" },
+        "onTimeDeparturePct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    {
+      "name": "reactionaryDelay",
+      "type": "boolean",
+      "required": false,
+      "default": false,
+      "description": "Delay caused by late arriving aircraft"
+    },
+    {
+      "name": "relatedFlightNumber",
+      "type": "string",
+      "required": false,
+      "description": "Previous flight causing reactionary delay"
+    },
+    {
+      "name": "delaySummary",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "totalDepartureDelayMinutes": { "type": "integer", "minimum": 0 },
+        "totalArrivalDelayMinutes": { "type": "integer", "minimum": 0 },
+        "delayCategory": { "type": "string", "enum": ["AIRLINE", "NON_AIRLINE", "WEATHER", "ATC", "MIXED"] }
+      }
+    },
+    {
+      "name": "reportedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportedTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "required": true,
+      "enum": ["OPEN", "UNDER_REVIEW", "FINALIZED"],
+      "default": "OPEN"
+    }
+  ],
+  "workflow": [
+    "OPEN",
+    "UNDER_REVIEW",
+    "FINALIZED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["FLIGHT_OPS", "PUNCTUALITY_ANALYST", "STATION_AGENT"],
+    "review": ["FLIGHT_OPS_MANAGER", "PUNCTUALITY_ANALYST"],
+    "finalize": ["FLIGHT_OPS_MANAGER"],
+    "view": ["OPERATIONS", "MANAGEMENT", "RELIABILITY", "SERVICE_QUALITY"]
+  },
+  "validationRules": [
+    { "field": "delaySummary.totalDepartureDelayMinutes", "rule": "equals_sum_delay_causes", "message": "Total delay must equal sum of causes" },
+    { "field": "actualDeparture", "rule": "after_or_equal", "refField": "scheduledDeparture", "message": "Actual departure cannot be before scheduled" }
+  ],
+  "uiMetadata": {
+    "layout": "delay_report",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["reportNumber", "flightNumber", "airlineCode", "aircraftRegistration", "departureAirport", "arrivalAirport", "operationalDate"] },
+      { "id": "times", "label": "Scheduled & Actual Times", "fields": ["scheduledDeparture", "scheduledArrival", "actualDeparture", "actualArrival"] },
+      { "id": "attribution", "label": "Delay Attribution", "fields": ["delayAttribution"] },
+      { "id": "causes", "label": "Delay Causes", "fields": ["delayCauses"] },
+      { "id": "reactionary", "label": "Reactionary Delay", "fields": ["reactionaryDelay", "relatedFlightNumber"] },
+      { "id": "summary", "label": "Delay Summary", "fields": ["delaySummary"] },
+      { "id": "distribution", "label": "Distribution Statistics", "fields": ["distribution"] },
+      { "id": "reporting", "label": "Reporting", "fields": ["reportedBy", "reportedTime", "status"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "delay_report",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "IATA AHDM (Airport Handling Manual Delay codes), ICAO Annex 6",
+  "notes": "Delay coding per IATA AHDM edition. Review of attribution by operations manager. Feed into punctuality statistics."
+}

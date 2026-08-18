@@ -1,0 +1,194 @@
+{
+  "formCode": "F006",
+  "name": "Diversion Record",
+  "version": "1.0",
+  "category": "dispatch",
+  "status": "ACTIVE",
+  "sourceStatus": "IMPLEMENTATION_TEMPLATE_NOT_OFFICIAL",
+  "description": "Record of flight diversion including decision rationale, coordination, and post-diversion actions.",
+  "fields": [
+    {
+      "name": "flightNumber",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "airlineCode",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "departureAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "arrivalAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "aircraftRegistration",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "operationalDate",
+      "type": "string",
+      "format": "date",
+      "required": true
+    },
+    {
+      "name": "diversionAirport",
+      "type": "string",
+      "required": true,
+      "format": "icao_code"
+    },
+    {
+      "name": "diversionReason",
+      "type": "string",
+      "required": true,
+      "enum": ["WEATHER", "MEDICAL", "TECHNICAL", "SECURITY", "OPERATIONAL", "FUEL", "ATC", "OTHER"],
+      "description": "Primary reason for diversion"
+    },
+    {
+      "name": "diversionReasonDetail",
+      "type": "string",
+      "required": false,
+      "description": "Detailed description of diversion reason"
+    },
+    {
+      "name": "decisionTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true,
+      "description": "Time diversion decision made (UTC)"
+    },
+    {
+      "name": "decisionMaker",
+      "type": "string",
+      "required": true,
+      "enum": ["PIC", "DISPATCHER", "JOINT", "ATC"],
+      "description": "Who made the diversion decision"
+    },
+    {
+      "name": "positionAtDecision",
+      "type": "object",
+      "required": false,
+      "properties": {
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "fix": { "type": "string" },
+        "flightLevel": { "type": "string" },
+        "distanceToDestination": { "type": "number" },
+        "distanceToDiversion": { "type": "number" }
+      }
+    },
+    {
+      "name": "fuelAtDecision",
+      "type": "number",
+      "required": true,
+      "description": "Fuel remaining at decision point (kg)"
+    },
+    {
+      "name": "weatherAtDiversion",
+      "type": "string",
+      "required": false,
+      "description": "Weather at diversion airport at decision time"
+    },
+    {
+      "name": "notamsAtDiversion",
+      "type": "array",
+      "required": false,
+      "items": { "type": "string" }
+    },
+    {
+      "name": "coordination",
+      "type": "object",
+      "required": true,
+      "properties": {
+        "atcNotified": { "type": "boolean", "default": false },
+        "atcTime": { "type": "string", "format": "date-time" },
+        "companyNotified": { "type": "boolean", "default": false },
+        "companyTime": { "type": "string", "format": "date-time" },
+        "handlingAgentNotified": { "type": "boolean", "default": false },
+        "customsImmigrationNotified": { "type": "boolean", "default": false },
+        "passengersNotified": { "type": "boolean", "default": false }
+      }
+    },
+    {
+      "name": "landingTime",
+      "type": "string",
+      "format": "date-time",
+      "required": false,
+      "description": "Actual landing time at diversion airport"
+    },
+    {
+      "name": "fuelOnLanding",
+      "type": "number",
+      "required": false,
+      "description": "Fuel remaining on landing (kg)"
+    },
+    {
+      "name": "postDiversionAction",
+      "type": "string",
+      "required": false,
+      "enum": ["REFUEL_DEPART", "LAYOVER", "CANCEL", "TRANSFER_PAX", "OTHER"],
+      "description": "Action taken after diversion"
+    },
+    {
+      "name": "postDiversionDetails",
+      "type": "string",
+      "required": false
+    },
+    {
+      "name": "reportPreparedBy",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "reportTime",
+      "type": "string",
+      "format": "date-time",
+      "required": true
+    }
+  ],
+  "workflow": [
+    "INITIATED",
+    "COORDINATING",
+    "LANDED",
+    "RESOLVED",
+    "REPORTED",
+    "ARCHIVED"
+  ],
+  "permissions": {
+    "create": ["DISPATCHER", "PIC"],
+    "coordinate": ["DISPATCHER", "FLIGHT_OPS"],
+    "close": ["DISPATCHER", "SENIOR_DISPATCHER", "FLIGHT_OPS_MANAGER"],
+    "view": ["FLIGHT_OPS", "MANAGEMENT", "SAFETY", "CREW"]
+  },
+  "validationRules": [
+    { "field": "decisionTime", "rule": "before_now", "message": "Decision time cannot be in the future" },
+    { "field": "fuelAtDecision", "rule": "greater_than", "value": 0, "message": "Fuel at decision must be positive" }
+  ],
+  "uiMetadata": {
+    "layout": "diversion_record",
+    "sections": [
+      { "id": "header", "label": "Flight Identification", "fields": ["flightNumber", "airlineCode", "aircraftRegistration", "operationalDate"] },
+      { "id": "diversion", "label": "Diversion Details", "fields": ["diversionAirport", "diversionReason", "diversionReasonDetail", "decisionTime", "decisionMaker", "positionAtDecision", "fuelAtDecision", "weatherAtDiversion", "notamsAtDiversion"] },
+      { "id": "coordination", "label": "Coordination", "fields": ["coordination"] },
+      { "id": "outcome", "label": "Outcome", "fields": ["landingTime", "fuelOnLanding", "postDiversionAction", "postDiversionDetails"] },
+      { "id": "reporting", "label": "Report", "fields": ["reportPreparedBy", "reportTime"] }
+    ]
+  },
+  "pdfMetadata": {
+    "template": "diversion_record",
+    "pageSize": "A4",
+    "orientation": "portrait"
+  },
+  "auditRequired": true,
+  "sourceReference": "ICAO Annex 6, Operator diversion procedures",
+  "notes": "Diversion record must be completed within 24 hours. Copy to Safety Department."
+}
