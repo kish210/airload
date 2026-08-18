@@ -1,7 +1,7 @@
 {
-    "version":  "1.1.1",
+    "version":  "1.1.2",
     "releaseDate":  "2026-08-18",
-    "notes":  "Adds the Forms surface: 47 operational form templates, searchable and fillable, saved as drafts with their missing fields listed. Documents that are produced from real load data — loadsheet, loading instructions, trim sheet, LMC, NOTOC — are shown read-only with a pointer to what produces them, so a second set of figures cannot be typed for the same flight.",
-    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.1.1.exe",
-    "sha256":  "87FFD767EAB4580571EECCEE8D60BC538C8A1EE560B8C35CD1B0B9E878ADCB82"
+    "notes":  "Forms can be printed as a standalone A4 document with signature lines and the not-official notice, so a page that leaves the screen carries its own disclaimer. Blank fields print as a dash rather than an empty cell. Documents produced from load data hide Print along with Save.",
+    "downloadUrl":  "https://github.com/kish210/airload/raw/main/station/releases/AirLoadStation-Setup-1.1.2.exe",
+    "sha256":  "ED8B45E1834DCC44C7EAC34ED4A84BC513F07B775E4B6B386E1F10C8C4F8B065"
 }
