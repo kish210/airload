@@ -4,6 +4,8 @@
 and balance, plot the CG envelope, and produce an IATA AHM 560 loadsheet — on
 one Windows PC, with no internet connection, no database, and no licence fee.
 
+### 🌐 [kish210.github.io/airload](https://kish210.github.io/airload/) — website in English, العربية, Türkçe, Русский, فارسی
+
 [**⬇ Download the installer**](station/releases) · [Current version and checksum](station/latest.json)
 
 ---
