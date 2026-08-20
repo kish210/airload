@@ -8,6 +8,9 @@ one Windows PC, with no internet connection, no database, and no licence fee.
 
 [**⬇ Download the installer**](station/releases) · [Current version and checksum](station/latest.json)
 
+> **Licence:** free to use and install, including commercially. Redistribution, rebranding and resale need written permission — see [LICENSE](LICENSE). · **الترخيص:** الاستخدام مجاني، وإعادة التوزيع والبيع تتطلب إذناً · **Lisans:** kullanım ücretsiz, yeniden satış izin gerektirir · **Лицензия:** использование бесплатно, перепродажа требует разрешения · **مجوز:** استفاده رایگان، فروش مجدد نیاز به اجازه دارد
+
+
 ---
 
 <div align="center">
