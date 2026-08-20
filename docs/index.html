@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Aircraft Weight and Balance &amp; Loadsheet Software | AirLoad Station</title>
+<meta name="description" content="Free offline weight and balance software for airline stations. Compute CG, plot the envelope and produce an IATA AHM 560 loadsheet on one Windows PC — no internet, no database, no licence fee.">
+<link rel="canonical" href="https://kish210.github.io/airload/">
+<link rel="alternate" hreflang="en" href="https://kish210.github.io/airload/">
+  <link rel="alternate" hreflang="ar" href="https://kish210.github.io/airload/ar.html">
+  <link rel="alternate" hreflang="tr" href="https://kish210.github.io/airload/tr.html">
+  <link rel="alternate" hreflang="ru" href="https://kish210.github.io/airload/ru.html">
+  <link rel="alternate" hreflang="fa" href="https://kish210.github.io/airload/fa.html">
+  <link rel="alternate" hreflang="x-default" href="https://kish210.github.io/airload/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Free Aircraft Weight and Balance &amp; Loadsheet Software | AirLoad Station">
+<meta property="og:description" content="Free offline weight and balance software for airline stations. Compute CG, plot the envelope and produce an IATA AHM 560 loadsheet on one Windows PC — no internet, no database, no licence fee.">
+<meta property="og:url" content="https://kish210.github.io/airload/">
+<meta property="og:image" content="https://kish210.github.io/airload/img/forms.png">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Aircraft Weight and Balance &amp; Loadsheet Software | AirLoad Station">
+<meta name="twitter:description" content="Free offline weight and balance software for airline stations. Compute CG, plot the envelope and produce an IATA AHM 560 loadsheet on one Windows PC — no internet, no database, no licence fee.">
+<meta name="twitter:image" content="https://kish210.github.io/airload/img/forms.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AirLoad Station","applicationCategory":"BusinessApplication","applicationSubCategory":"Aviation load control / weight and balance","operatingSystem":"Windows 10, Windows 11","softwareVersion":"1.1.2","description":"Free offline weight and balance software for airline stations. Compute CG, plot the envelope and produce an IATA AHM 560 loadsheet on one Windows PC — no internet, no database, no licence fee.","inLanguage":"en","url":"https://kish210.github.io/airload/","downloadUrl":"https://github.com/kish210/airload/releases","softwareHelp":"https://github.com/kish210/airload#readme","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"AirLoad Pro","email":"mohammad.ghodrati@gmail.com"}}</script>
+<style>
+  :root{--bg:#101319;--s1:#161a22;--s2:#1b2029;--bd:#383f4d;--tx:#e8edf3;--t2:#9aa7b4;--t3:#7e8795;--pr:#4da3ff;--ok:#5ecf9a;--wn:#e0aa3a}
+  @media(prefers-color-scheme:light){:root{--bg:#f7f9fb;--s1:#fff;--s2:#f1f4f8;--bd:#c9d1d9;--tx:#10141a;--t2:#4a5563;--t3:#5b6672;--pr:#0a5aa0;--ok:#1b5e3f;--wn:#8a6100}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 "Segoe UI",system-ui,-apple-system,Tahoma,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:var(--pr);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  header{border-bottom:1px solid var(--bd);background:var(--s1)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap}
+  .brand{font-weight:700;letter-spacing:.5px;font-size:18px}
+  nav{display:flex;gap:14px;font-size:14px;flex-wrap:wrap}
+  nav [aria-current]{color:var(--t3)}
+  h1{font-size:2.1rem;line-height:1.25;letter-spacing:-.02em;margin:36px 0 14px}
+  h2{font-size:1.3rem;letter-spacing:-.015em;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+  .lede{font-size:1.1rem;color:var(--t2);max-width:70ch}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px}
+  .btn{display:inline-block;background:var(--pr);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600}
+  .btn:hover{text-decoration:none;opacity:.92}
+  .btn.alt{background:transparent;color:var(--pr);border:1px solid var(--pr)}
+  .ver{font-size:13px;color:var(--t3);margin-top:6px}
+  figure{margin:28px 0}
+  img{max-width:100%;height:auto;border:1px solid var(--bd);border-radius:12px;display:block}
+  figcaption{font-size:13px;color:var(--t3);margin-top:8px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:1rem;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--t2);font-size:14px}
+  ul.plain{list-style:none;padding:0;margin:0}
+  ul.plain li{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin-bottom:10px;color:var(--t2);font-size:15px}
+  ol{padding-inline-start:22px;color:var(--t2)}
+  ol li{margin-bottom:8px}
+  .warn{background:rgba(224,170,58,.12);border:1px solid var(--wn);color:var(--wn);border-radius:10px;padding:14px;font-size:14px;margin:18px 0}
+  table{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+  th,td{text-align:start;padding:9px 10px;border-bottom:1px solid var(--bd)}
+  thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+  td.y{color:var(--ok);font-weight:700}td.n{color:var(--t3)}
+  .contact{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin:16px 0 40px}
+  .contact a{font-size:1.1rem;font-weight:600}
+  footer{border-top:1px solid var(--bd);color:var(--t3);font-size:13px;padding:22px 0 40px;margin-top:20px}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <span class="brand">AIRLOAD STATION</span>
+  <nav><span aria-current="page">English</span><a href="ar.html" hreflang="ar">العربية</a><a href="tr.html" hreflang="tr">Türkçe</a><a href="ru.html" hreflang="ru">Русский</a><a href="fa.html" hreflang="fa">فارسی</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Free aircraft weight &amp; balance and loadsheet software</h1>
+  <p class="lede">AirLoad Station computes weight and balance, plots the CG envelope and produces an IATA AHM 560 loadsheet — on one Windows PC, with no internet connection, no database and no licence fee.</p>
+  <div class="cta">
+    <a class="btn" href="https://github.com/kish210/airload/releases">Download for Windows</a>
+    <a class="btn alt" href="https://github.com/kish210/airload/blob/main/station/latest.json">Verify the checksum</a>
+  </div>
+  <p class="ver">v1.1.2 &middot; Windows 10/11 &middot; Node.js included</p>
+
+  <figure>
+    <img src="img/forms.png" alt="Free aircraft weight &amp; balance and loadsheet software — 47 controlled aviation forms, searchable by category" loading="lazy" width="1430" height="4216">
+    <figcaption>Dispatch, ground handling, dangerous goods, border, maintenance, safety and reporting — fillable and printable.</figcaption>
+  </figure>
+
+  <h2>What it does</h2>
+  <div class="grid">
+    <div class="card"><h3>Weight and balance</h3><p>Zero fuel, ramp, take-off and landing weights, moments, index, %MAC and the stabiliser trim setting — checked against the aircraft's certified CG envelope and structural limits.</p></div>
+    <div class="card"><h3>CG envelope on the printed loadsheet</h3><p>ZFW, TOW and LAW plotted inside the envelope, so the captain can check the flight at a glance before signing rather than trusting a number.</p></div>
+    <div class="card"><h3>IATA AHM 560 loadsheet</h3><p>A printable PDF and an AHM 565 Type B message.</p></div>
+    <div class="card"><h3>Passenger counts, not kilograms</h3><p>Enter adults, children and infants; IATA RP 1720 standard weights are applied and the arithmetic is shown so it can be checked.</p></div>
+    <div class="card"><h3>Last minute change (LMC)</h3><p>Recorded against a released loadsheet, capped by your operations manual.</p></div>
+    <div class="card"><h3>AHM 514 fuel index table</h3><p>Ramp, take-off and landing each use the fuel arm for the quantity actually on board.</p></div>
+    <div class="card"><h3>METAR and TAF</h3><p>Raw aerodrome weather for the briefing when a connection happens to be available.</p></div>
+    <div class="card"><h3>47 operational forms</h3><p>Dispatch, ground handling, dangerous goods, border, maintenance, safety and reporting — fillable and printable.</p></div>
+  </div>
+
+  <figure>
+    <img src="img/forms-engine-backed.png" alt="Loadsheet and NOTOC are produced from real load data, shown read-only rather than typed" loading="lazy" width="1430" height="2000">
+    <figcaption>Documents produced from real load data are shown, never typed a second time.</figcaption>
+  </figure>
+
+  <h2>What it deliberately does not do</h2>
+  <ul class="plain"><li>It ships with no aircraft data. Nothing is calculated until you load your own AHM 514 configuration; it will not guess an aircraft's weights, arms, envelope or trim table.</li><li>It will not release a loadsheet outside the CG envelope, and refuses a last minute change that breaches your cap, a structural limit or the envelope — it requires a new loadsheet instead.</li><li>The forms are implementation templates, not official ICAO/IATA/FAA/EASA documents.</li><li>Standard weights ship as unapproved samples. Replace them with your airline's approved table.</li><li>It listens on your computer only, and nothing is sent anywhere.</li></ul>
+
+  <h2>Installing</h2>
+  <ol><li>Download the installer and check its SHA-256 against the published manifest.</li><li>Run it. A Node.js runtime is included — nothing else is needed.</li><li>Open the Aircraft tab and paste your AHM 514 configuration.</li></ol>
+  <div class="warn">The installer is not code-signed, so Windows SmartScreen warns on first run. Verifying the published SHA-256 is the check that actually proves the file is the one we published.</div>
+
+  <h2>AirLoad Pro — the full departure control system</h2>
+  <p class="lede">AirLoad Station is the free load control part of AirLoad Pro, a complete departure control system for small airlines.</p>
+  <table>
+    <thead><tr><th></th><th>AirLoad Station</th><th>AirLoad Pro</th></tr></thead>
+    <tbody><tr><td>Weight &amp; balance, loadsheet, LMC</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>CG envelope, trim sheet, Type B</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>47 operational forms</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>Passenger check-in, seat map</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Boarding, BCBP boarding passes (Res 792)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Baggage acceptance, bag tags (Res 740)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Air cargo, air waybills (Res 600a)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Dangerous goods, NOTOC</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>APIS / PNRGOV regulatory filing</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Type B messages (LDM, CPM, LIR, BSM, PTM)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Multi-user, roles, audit trail</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Multi-airline, multi-station</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Mobile surface for gate and ramp</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Self-service kiosk</td><td class="n">—</td><td class="y">✓</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Buying AirLoad Pro</h2>
+  <div class="contact">
+    <p>To buy AirLoad Pro, request a demonstration or ask about a deployment, write to</p>
+    <a href="mailto:mohammad.ghodrati@gmail.com">mohammad.ghodrati@gmail.com</a>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <p>AirLoad Station 1.1.2 &middot; <a href="https://github.com/kish210/airload">github.com/kish210/airload</a></p>
+  <p>Implementation templates, not official ICAO/IATA/FAA/EASA documents. Verify every regulatory requirement against current authorised sources before operational use.</p>
+</div></footer>
+</body>
+</html>

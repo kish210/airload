@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бесплатная программа центровки и загрузки самолёта | AirLoad Station</title>
+<meta name="description" content="Бесплатное офлайн-ПО для контроля загрузки авиакомпаний. Расчёт центровки, построение диаграммы и выпуск сводного загрузочного листа IATA AHM 560 на одном компьютере с Windows.">
+<link rel="canonical" href="https://kish210.github.io/airload/ru.html">
+<link rel="alternate" hreflang="en" href="https://kish210.github.io/airload/">
+  <link rel="alternate" hreflang="ar" href="https://kish210.github.io/airload/ar.html">
+  <link rel="alternate" hreflang="tr" href="https://kish210.github.io/airload/tr.html">
+  <link rel="alternate" hreflang="ru" href="https://kish210.github.io/airload/ru.html">
+  <link rel="alternate" hreflang="fa" href="https://kish210.github.io/airload/fa.html">
+  <link rel="alternate" hreflang="x-default" href="https://kish210.github.io/airload/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Бесплатная программа центровки и загрузки самолёта | AirLoad Station">
+<meta property="og:description" content="Бесплатное офлайн-ПО для контроля загрузки авиакомпаний. Расчёт центровки, построение диаграммы и выпуск сводного загрузочного листа IATA AHM 560 на одном компьютере с Windows.">
+<meta property="og:url" content="https://kish210.github.io/airload/ru.html">
+<meta property="og:image" content="https://kish210.github.io/airload/img/forms.png">
+<meta property="og:locale" content="ru">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Бесплатная программа центровки и загрузки самолёта | AirLoad Station">
+<meta name="twitter:description" content="Бесплатное офлайн-ПО для контроля загрузки авиакомпаний. Расчёт центровки, построение диаграммы и выпуск сводного загрузочного листа IATA AHM 560 на одном компьютере с Windows.">
+<meta name="twitter:image" content="https://kish210.github.io/airload/img/forms.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AirLoad Station","applicationCategory":"BusinessApplication","applicationSubCategory":"Aviation load control / weight and balance","operatingSystem":"Windows 10, Windows 11","softwareVersion":"1.1.2","description":"Бесплатное офлайн-ПО для контроля загрузки авиакомпаний. Расчёт центровки, построение диаграммы и выпуск сводного загрузочного листа IATA AHM 560 на одном компьютере с Windows.","inLanguage":"ru","url":"https://kish210.github.io/airload/ru.html","downloadUrl":"https://github.com/kish210/airload/releases","softwareHelp":"https://github.com/kish210/airload#readme","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"AirLoad Pro","email":"mohammad.ghodrati@gmail.com"}}</script>
+<style>
+  :root{--bg:#101319;--s1:#161a22;--s2:#1b2029;--bd:#383f4d;--tx:#e8edf3;--t2:#9aa7b4;--t3:#7e8795;--pr:#4da3ff;--ok:#5ecf9a;--wn:#e0aa3a}
+  @media(prefers-color-scheme:light){:root{--bg:#f7f9fb;--s1:#fff;--s2:#f1f4f8;--bd:#c9d1d9;--tx:#10141a;--t2:#4a5563;--t3:#5b6672;--pr:#0a5aa0;--ok:#1b5e3f;--wn:#8a6100}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 "Segoe UI",system-ui,-apple-system,Tahoma,sans-serif;font-variant-numeric:tabular-nums}
+  a{color:var(--pr);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  header{border-bottom:1px solid var(--bd);background:var(--s1)}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap}
+  .brand{font-weight:700;letter-spacing:.5px;font-size:18px}
+  nav{display:flex;gap:14px;font-size:14px;flex-wrap:wrap}
+  nav [aria-current]{color:var(--t3)}
+  h1{font-size:2.1rem;line-height:1.25;letter-spacing:-.02em;margin:36px 0 14px}
+  h2{font-size:1.3rem;letter-spacing:-.015em;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+  .lede{font-size:1.1rem;color:var(--t2);max-width:70ch}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 8px}
+  .btn{display:inline-block;background:var(--pr);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600}
+  .btn:hover{text-decoration:none;opacity:.92}
+  .btn.alt{background:transparent;color:var(--pr);border:1px solid var(--pr)}
+  .ver{font-size:13px;color:var(--t3);margin-top:6px}
+  figure{margin:28px 0}
+  img{max-width:100%;height:auto;border:1px solid var(--bd);border-radius:12px;display:block}
+  figcaption{font-size:13px;color:var(--t3);margin-top:8px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:1rem;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--t2);font-size:14px}
+  ul.plain{list-style:none;padding:0;margin:0}
+  ul.plain li{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;margin-bottom:10px;color:var(--t2);font-size:15px}
+  ol{padding-inline-start:22px;color:var(--t2)}
+  ol li{margin-bottom:8px}
+  .warn{background:rgba(224,170,58,.12);border:1px solid var(--wn);color:var(--wn);border-radius:10px;padding:14px;font-size:14px;margin:18px 0}
+  table{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+  th,td{text-align:start;padding:9px 10px;border-bottom:1px solid var(--bd)}
+  thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+  td.y{color:var(--ok);font-weight:700}td.n{color:var(--t3)}
+  .contact{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;margin:16px 0 40px}
+  .contact a{font-size:1.1rem;font-weight:600}
+  footer{border-top:1px solid var(--bd);color:var(--t3);font-size:13px;padding:22px 0 40px;margin-top:20px}
+</style>
+</head>
+<body>
+<header><div class="wrap bar">
+  <span class="brand">AIRLOAD STATION</span>
+  <nav><a href="./" hreflang="en">English</a><a href="ar.html" hreflang="ar">العربية</a><a href="tr.html" hreflang="tr">Türkçe</a><span aria-current="page">Русский</span><a href="fa.html" hreflang="fa">فارسی</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Бесплатная программа центровки и загрузки самолёта</h1>
+  <p class="lede">AirLoad Station рассчитывает массу и центровку, строит центровочную диаграмму и выпускает сводный загрузочный лист IATA AHM 560 — на одном компьютере с Windows, без интернета, базы данных и лицензионных платежей.</p>
+  <div class="cta">
+    <a class="btn" href="https://github.com/kish210/airload/releases">Скачать для Windows</a>
+    <a class="btn alt" href="https://github.com/kish210/airload/blob/main/station/latest.json">Проверить контрольную сумму</a>
+  </div>
+  <p class="ver">v1.1.2 &middot; Windows 10/11 &middot; Node.js included</p>
+
+  <figure>
+    <img src="img/forms.png" alt="Бесплатная программа центровки и загрузки самолёта — 47 controlled aviation forms, searchable by category" loading="lazy" width="1430" height="4216">
+    <figcaption>Dispatch, ground handling, dangerous goods, border, maintenance, safety and reporting — fillable and printable.</figcaption>
+  </figure>
+
+  <h2>Что он делает</h2>
+  <div class="grid">
+    <div class="card"><h3>Масса и центровка</h3><p>Масса без топлива, взлётная и посадочная масса, моменты, индекс, %САХ и установка стабилизатора с проверкой по сертифицированной диаграмме и ограничениям.</p></div>
+    <div class="card"><h3>Центровочная диаграмма на печатном листе</h3><p>Точки ZFW, TOW и LAW внутри допустимой области, чтобы командир мог проверить рейс перед подписанием.</p></div>
+    <div class="card"><h3>Загрузочный лист IATA AHM 560</h3><p>Печатный PDF и сообщение Type B по AHM 565.</p></div>
+    <div class="card"><h3>Количество пассажиров вместо килограммов</h3><p>Вводите взрослых, детей и младенцев; применяются стандартные массы IATA RP 1720, расчёт показывается.</p></div>
+    <div class="card"><h3>Изменение в последнюю минуту (LMC)</h3><p>Регистрируется на выпущенном листе в пределах лимита вашего руководства.</p></div>
+    <div class="card"><h3>Таблица индекса топлива AHM 514</h3><p>Каждый этап использует плечо топлива для фактически залитого количества.</p></div>
+    <div class="card"><h3>METAR и TAF</h3><p>Сводки погоды аэродрома для брифинга при наличии связи.</p></div>
+    <div class="card"><h3>47 операционных форм</h3><p>Диспетчеризация, наземное обслуживание, опасные грузы, границы, ТО, безопасность и отчётность.</p></div>
+  </div>
+
+  <figure>
+    <img src="img/forms-engine-backed.png" alt="Loadsheet and NOTOC are produced from real load data, shown read-only rather than typed" loading="lazy" width="1430" height="2000">
+    <figcaption>Documents produced from real load data are shown, never typed a second time.</figcaption>
+  </figure>
+
+  <h2>Чего он намеренно не делает</h2>
+  <ul class="plain"><li>Не содержит данных о самолётах. Расчёт невозможен, пока вы не загрузите свою конфигурацию AHM 514.</li><li>Не выпускает загрузочный лист вне допустимой центровки и отклоняет LMC сверх лимита.</li><li>Формы — шаблоны реализации, а не официальные документы ICAO/IATA/FAA/EASA.</li><li>Стандартные массы — неутверждённые образцы; замените их утверждённой таблицей авиакомпании.</li><li>Слушает только ваш компьютер, ничего никуда не отправляется.</li></ul>
+
+  <h2>Установка</h2>
+  <ol><li>Скачайте установщик и сверьте SHA-256 с опубликованным файлом.</li><li>Запустите. Среда Node.js входит в комплект.</li><li>Откройте вкладку «Aircraft» и вставьте конфигурацию AHM 514.</li></ol>
+  <div class="warn">Установщик не подписан цифровой подписью, поэтому Windows SmartScreen предупредит при первом запуске. Настоящая проверка — сверка опубликованного SHA-256.</div>
+
+  <h2>AirLoad Pro — полная система управления вылетом</h2>
+  <p class="lede">Бесплатная версия — это часть контроля загрузки системы AirLoad Pro, полной системы управления вылетом для небольших авиакомпаний.</p>
+  <table>
+    <thead><tr><th></th><th>AirLoad Station</th><th>AirLoad Pro</th></tr></thead>
+    <tbody><tr><td>Weight &amp; balance, loadsheet, LMC</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>CG envelope, trim sheet, Type B</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>47 operational forms</td><td class="y">✓</td><td class="y">✓</td></tr><tr><td>Passenger check-in, seat map</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Boarding, BCBP boarding passes (Res 792)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Baggage acceptance, bag tags (Res 740)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Air cargo, air waybills (Res 600a)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Dangerous goods, NOTOC</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>APIS / PNRGOV regulatory filing</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Type B messages (LDM, CPM, LIR, BSM, PTM)</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Multi-user, roles, audit trail</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Multi-airline, multi-station</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Mobile surface for gate and ramp</td><td class="n">—</td><td class="y">✓</td></tr><tr><td>Self-service kiosk</td><td class="n">—</td><td class="y">✓</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Покупка AirLoad Pro</h2>
+  <div class="contact">
+    <p>По вопросам покупки, демонстрации и внедрения пишите на</p>
+    <a href="mailto:mohammad.ghodrati@gmail.com">mohammad.ghodrati@gmail.com</a>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <p>AirLoad Station 1.1.2 &middot; <a href="https://github.com/kish210/airload">github.com/kish210/airload</a></p>
+  <p>Implementation templates, not official ICAO/IATA/FAA/EASA documents. Verify every regulatory requirement against current authorised sources before operational use.</p>
+</div></footer>
+</body>
+</html>

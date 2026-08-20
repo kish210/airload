@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kish210.github.io/airload/sitemap.xml
